@@ -1,0 +1,75 @@
+.login-form .alert-dismissible{
+    top: 35px;
+}
+.form-fields-comment{
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+#rosterEntryTable input{
+    width: 28px;
+    padding: 0px 8px;
+}
+#rosterEntryTable span{
+   font-size: 11px;
+}
+/* Employee css */
+.emp-report-filters{
+	border: 1px solid #dee2e6;
+	padding: 11px;
+}
+#outputemppic{
+    width: 180px;
+    height: 180px;
+    margin-bottom: 10px;
+}
+.emp-pic{
+	padding: 9px;
+	height: 88%;
+}
+.dashed-boder{
+	border: 1px dashed #ccc !important;
+}
+.emp-border{
+	padding: 7px 10px;
+	margin: 15px 0px;
+
+}
+/* End Employee css */
+
+.b-t-default{
+	border-top: 1px dashed #ccc;
+    padding-top: 16px;
+    margin-top: 16px
+}
+.form-control {
+    border: 1px solid #d2cece;
+}
+.btn-default {
+    background: rgb(239, 239, 239);
+}
+
+body{
+	font-family: sans-serif !important;
+}
+.dataTables_filter input[type="search"] {
+    margin-left: 0px !important;
+    width:100% !important;
+}
+.box-bl{
+   border-right: 1px dashed #ccc;
+}
+.graph-preloader { 
+    background:url(../img/graph-loader.gif) center center no-repeat;
+}
+.header-btns .btn{
+    width:80px;
+}
+.employee-main .header-btns .btn{
+    width:unset;
+}
+.isactiveSec{
+    margin:auto 0;
+}
+.search_company{
+    margin-top:20px;
+}

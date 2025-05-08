@@ -1,0 +1,56 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateAccvoucherDetailexpTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('accvoucher_detailexp', function (Blueprint $table) {
+            $table->id();
+            $table->decimal('mid',18,4);
+            $table->foreignId('accounttype')->references('id')->on('accaccount_type');
+            $table->foreignId('accountid')->references('id')->on('accaccount_coa');
+            $table->decimal('amount',18,4);
+            $table->decimal('vat',18,4);
+            $table->integer('currencyid');
+            $table->integer('exchangeid');
+            $table->decimal('exchangerate',18,4);
+            $table->string('chequeno',250);
+            $table->datetime('chequedate' )->nullable();
+            $table->string('refno',200);
+            $table->string('vname',500);
+            $table->integer('priority');
+            $table->integer('isposted');
+            $table->datetime('posteddate' )->nullable();
+            $table->integer('postedby');
+            $table->foreignId('companyid')->references('id')->on('setup_company');
+            $table->foreignId('locationid')->references('id')->on('setup_location');
+            $table->integer('projectid');
+            $table->integer('insertedby')->nullable();
+            $table->datetime('inserteddate')->nullable();
+            $table->string('insertedip', 200)->nullable();
+            $table->integer('updatedby')->nullable();
+            $table->datetime('updateddate')->nullable();
+            $table->string('updatedip', 200)->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('accvoucher_detailexp');
+    }
+}
