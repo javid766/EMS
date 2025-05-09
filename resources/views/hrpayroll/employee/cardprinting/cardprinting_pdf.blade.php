@@ -91,7 +91,7 @@
               <div style="padding:7px 7px;">
                 <div class="box">
                <div style="font-weight: 600;font-size: 15px;">{{$value['company']}}</div>
-               <div class="location-text">{{$value['address']}}</div>
+               <div class="location-text">{{$value['location']}}</div>
 
               <div class="row">
                 <div class="emp-img" style="float: right;">

@@ -30,7 +30,7 @@
                         <div class="form-group col-sm-4">
                             <label for="loanType" class="col-form-label">{{ __('Department')}}</label>
                             <div>
-                                {!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2', 'id'=> 'deptid', 'required'=> 'required']) !!}
+                                {!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2', 'id'=> 'deptid', 'placeholder'=> '--- Select Department ---', 'required'=> 'required']) !!}
                             </div>
                             <div class="help-block with-errors"></div>
 
@@ -87,12 +87,12 @@
                                     <tr>
                                         <td>{{$value->empcode.' - '}}{{$value->employeename}}</td>
                                         <td>{{$value->loandate}}</td>
-                                        <td>{{ number_format($value->loanamount) }}</td>
+                                        <td>{{$value->loanamount}}</td>
                                         <td>{{$value->installment}}</td>
-                                        <td>{{ number_format($value->balance) }}</td>
+                                        <td>{{$value->balance}}</td>
                                         <td>{{$value->filldate}}</td>
                                         <td>
-                                            <input id="amount" type="text" class="form-control" name="data[{{$i}}][amount]" value="{{ $value->deductionamount}}" onkeydown="return event.charCode != 45 && event.keyCode !== 69 && event.keyCode !== 189">
+                                            <input id="amount" type="text" class="form-control" name="data[{{$i}}][amount]" value="{{$value->amount}}" onkeydown="return event.charCode != 45 && event.keyCode !== 69 && event.keyCode !== 189">
                                         </td>
                                         <td><input type="text" name="data[{{$i}}][remarks]" class="form-control" id="remarks" value="{{ $value->remarks }}"></td>
                                     </tr>

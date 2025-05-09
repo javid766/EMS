@@ -23,6 +23,7 @@ use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserTypeController;
 
 use App\Http\Controllers\HrPayroll\Setup\ConfigurationsController;
+use App\Http\Controllers\HrPayroll\Setup\FinancialYearController;
 use App\Http\Controllers\HrPayroll\Setup\SalaryBanksController;
 use App\Http\Controllers\HrPayroll\Setup\TenantController;
 use App\Http\Controllers\HrPayroll\Setup\CompanyController;
@@ -38,6 +39,7 @@ use App\Http\Controllers\HrPayroll\Setup\AttCodeController;
 use App\Http\Controllers\HrPayroll\Setup\WeekdayController;
 use App\Http\Controllers\HrPayroll\Setup\EtypeController;
 use App\Http\Controllers\HrPayroll\Setup\ShiftController;
+use App\Http\Controllers\HrPayroll\Setup\RosterShiftController;
 use App\Http\Controllers\HrPayroll\Setup\DeptGroupController;
 use App\Http\Controllers\HrPayroll\Setup\JobStatusController;
 use App\Http\Controllers\HrPayroll\Setup\LeftStatusController;
@@ -56,11 +58,15 @@ use App\Http\Controllers\HrPayroll\Setup\Reports\SetupReportsController;
 
 use App\Http\Controllers\HrPayroll\Employee\EmployeeInfoController;
 use App\Http\Controllers\HrPayroll\Employee\CardPrintingController;
+use App\Http\Controllers\HrPayroll\Employee\EmployeeTransferController;
 use App\Http\Controllers\HrPayroll\Employee\FixTaxController;
+use App\Http\Controllers\HrPayroll\Employee\ClosingMonthChequeController;
 use App\Http\Controllers\HrPayroll\Employee\SalAdvanceController;
 use App\Http\Controllers\HrPayroll\Employee\LocalSaleController;
 use App\Http\Controllers\HrPayroll\Employee\LoanEntryController;
 use App\Http\Controllers\HrPayroll\Employee\LoanDeductionController;
+use App\Http\Controllers\HrPayroll\Employee\TrialCardPrintingController;
+use App\Http\Controllers\HrPayroll\Employee\TrialEmployeeEntryController;
 use App\Http\Controllers\HrPayroll\Employee\Reports\EmployeeReportController;
 
 use App\Http\Controllers\HrPayroll\TimeEntry\AttEntryController;
@@ -70,6 +76,7 @@ use App\Http\Controllers\HrPayroll\TimeEntry\OTEntryDailyController;
 use App\Http\Controllers\HrPayroll\TimeEntry\OTEntryMonthlyController;
 use App\Http\Controllers\HrPayroll\TimeEntry\OfficialVisitEntryController;
 use App\Http\Controllers\HrPayroll\TimeEntry\LeaveApplyController;
+use App\Http\Controllers\HrPayroll\TimeEntry\RosterEntryController;
 use App\Http\Controllers\HrPayroll\TimeEntry\AttCorrectionController;
 
 use App\Http\Controllers\HrPayroll\Posting\SalaryPostingController;
@@ -186,7 +193,14 @@ Route::get('/permission', [PermissionController::class,'index']);
 		Route::get('/user/type/fillform/{id}', [UserTypeController::class,'fillForm'])->name('user-type-fillform');
 	});
 
-
+	//Setup Financial Year Routes
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_FINANCIAL_YEAR], function(){
+		Route::get('/setup/financial-year', [FinancialYearController::class,'index'])->name('setup-financial-year');
+		Route::get('/setup/financial-year/fillgrid', [FinancialYearController::class,'fillGrid'])->name('setup-financial-year-fillgrid');
+		Route::get('/setup/financial-year/fillform/{id}', [FinancialYearController::class,'fillForm'])->name('setup-financial-year-fillform');
+		Route::post('/setup/financial-year/save', [FinancialYearController::class,'save'])->name('setup-financial-year-save');
+		Route::get('/setup/financial-year/delete/{id}', [FinancialYearController::class,'delete'])->name('setup-financial-year-delete');
+	});
 
 	// Setup Bank Routes
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_BANK], function(){
@@ -327,6 +341,14 @@ Route::get('/permission', [PermissionController::class,'index']);
 		Route::get('/setup/shift/delete/{id}', [ShiftController::class,'delete'])->name('setup-shift-delete');
 	});
 
+	//Setup Roster Shift Routes
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_ATT_ROSTER_SHIFT], function(){
+		Route::get('/setup/roster-shift', [RosterShiftController::class,'index'])->name('setup-roster-shift');
+		Route::get('/setup/roster-shift/fillgrid', [RosterShiftController::class,'fillGrid'])->name('setup-roster-shift-fillgrid');
+		Route::get('/setup/roster-shift/fillform/{id}', [RosterShiftController::class,'fillForm'])->name('setup-roster-shift-fillform');
+		Route::post('/setup/roster-shift/save', [RosterShiftController::class,'save'])->name('setup-roster-shift-save');
+		Route::get('/setup/roster-shift/delete/{id}', [RosterShiftController::class,'delete'])->name('setup-roster-shift-delete');
+	});
 
 	//Setup Department Group Routes
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_ATT_DEPT_GROUP], function(){
@@ -480,6 +502,15 @@ Route::get('/permission', [PermissionController::class,'index']);
 		Route::get('/employee/card-printing/print', [CardPrintingController::class,'print'])->name('employee-card-printing-print');
 	});
 
+	//Employee Transfer Routes
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_LOC_TRANSFER], function(){
+		Route::get('/employee/employeetransfer', [EmployeeTransferController::class,'index'])->name('employee-transfer');
+		Route::get('/employee/employeetransfer/fillgrid', [EmployeeTransferController::class,'fillGrid'])->name('employee-transfer-fillgrid');
+		Route::get('/employee/employeetransfer/getEmpLocationId', [EmployeeTransferController::class,'getEmpLocationId'])->name('employee-transfer-locationid');
+		Route::get('/employee/employeetransfer/fillform/{id}', [EmployeeTransferController::class,'fillForm'])->name('employee-transfer-fillform');
+		Route::post('/employee/employeetransfer/save', [EmployeeTransferController::class,'save'])->name('employee-transfer-save');
+		Route::get('/employee/employeetransfer/delete/{id}', [EmployeeTransferController::class,'delete'])->name('employee-transfer-delete');
+	});
 
 	//Employee Fix Tax Routes
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_FIX_TAX], function(){
@@ -488,6 +519,15 @@ Route::get('/permission', [PermissionController::class,'index']);
 		Route::get('/employee/fix-tax/fillform/{id}', [FixTaxController::class,'fillForm'])->name('employee-fix-tax-fillform');
 		Route::post('/employee/fix-tax/save', [FixTaxController::class,'save'])->name('employee-fix-tax-save');
 		Route::get('/employee/fix-tax/delete/{id}', [FixTaxController::class,'delete'])->name('employee-fix-tax-delete');
+	});
+
+	//Employee Closing Month Routes
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_CLOSING_MONTH_CHEQUE], function(){
+		Route::get('/employee/closing-month-cheque', [ClosingMonthChequeController::class,'index'])->name('employee-closing-month-cheque');
+		Route::get('/employee/closing-month-cheque/fillgrid', [ClosingMonthChequeController::class,'fillGrid'])->name('employee-closing-month-cheque-fillgrid');
+		Route::get('/employee/closing-month-cheque/fillform/{id}', [ClosingMonthChequeController::class,'fillForm'])->name('employee-allowance-deduction-fillform');
+		Route::post('/employee/closing-month-cheque/save', [ClosingMonthChequeController::class,'save'])->name('employee-closing-month-cheque-save');
+		Route::get('/employee/closing-month-cheque/delete/{id}', [ClosingMonthChequeController::class,'delete'])->name('employee-closing-month-cheque-delete');
 	});
 
 	//Employee Advance Routes
@@ -533,6 +573,24 @@ Route::get('/permission', [PermissionController::class,'index']);
 		Route::get('/employee/report/fillgrid', [EmployeeReportController::class,'fillGrid'])->name('employee-report-fillgrid');
 	});
 
+	//Trial Employee Routes
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_TRIAL], function(){	
+		Route::get('/employee/trial-employee-entry', [TrialEmployeeEntryController::class,'index'])->name('trial-employee-entry');
+		Route::get('/employee/trial-employee-entry/fillgrid', [TrialEmployeeEntryController::class,'fillGrid'])->name('trial-employee-entry-fillgrid');
+		Route::get('/employee/trial-employee-entry/fillform/{id}', [TrialEmployeeEntryController::class,'fillForm'])->name('trial-employee-entry-fillform');
+		Route::post('/employee/trial-employee-entry/save', [TrialEmployeeEntryController::class,'save'])->name('trial-employee-entry-save');
+		Route::get('/employee/trial-employee-entry/search', [TrialEmployeeEntryController::class,'search'])
+		->name('trial-employee-entry-search');
+	});
+
+	//Trial Employee Card Printing Routes
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_TRIAL_CARD_PRINTING], function(){
+		Route::get('/employee/trial-card-printing', [TrialCardPrintingController::class,'index'])->name('trial-card-printing');
+		Route::get('/employee/trial-card-printing/fillgrid', [TrialCardPrintingController::class,'fillGrid'])->name('employee-trial-card-printing-fillgrid');
+		Route::get('/employee/trial-card-printing/fillform/{id}', [TrialCardPrintingController::class,'fillForm'])->name('employee-trial-card-printing-fillform');
+		Route::post('/employee/trial-card-printing/save', [TrialCardPrintingController::class,'save'])->name('employee-trial-card-printing-save');
+		Route::get('/employee/trial-card-printing/delete/{id}', [TrialCardPrintingController::class,'delete'])->name('employee-trial-card-printing-delete');
+	});
 	
 	//START TIME ENTRY ROUTES
 
@@ -605,6 +663,15 @@ Route::get('/permission', [PermissionController::class,'index']);
 		// Route::get('/time-entry/leave-entry/delete/{id}', [LeaveApplyController::class,'delete'])->name('leave-entry-delete');
 	});
 
+
+	//Roster Entry
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_TE_ROSTER_ENTRY], function(){
+		Route::get('/time-entry/roster-entry', [RosterEntryController::class,'index'])->name('roster-entry');
+		Route::get('/time-entry/roster-entry/fillgrid', [RosterEntryController::class,'fillGrid'])->name('roster-entry-fillgrid');
+		Route::get('/time-entry/roster-entry/validate-roster-shift', [RosterEntryController::class,'validateRosterShiftEntries'])->name('roster-entry-validate-roster-shift');
+		Route::post('/time-entry/roster-entry/save', [RosterEntryController::class,'save'])->name('roster-entry-save');
+		Route::post('/time-entry/roster-entry/search', [RosterEntryController::class,'search'])->name('roster-entry-search');
+	});
 	// End Time Entry Routes
 
 
@@ -636,11 +703,6 @@ Route::get('/permission', [PermissionController::class,'index']);
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_Att_MONTHLY_REPORT], function(){
 		Route::get('/reports/monthy-attendence-report', [MonthlyAttReportController::class,'index'])->name('monthy-attendence-report');
 		Route::get('/reports/monthy-attendence-report/fillgrid', [MonthlyAttReportController::class,'fillGrid'])->name('monthy-attendence-report-fillgrid');
-
-		Route::get('/reports/monthy-attendance-report/setsession', [MonthlyAttReportController::class,'setsession'])->name('monthy-attendance-report-setsession');
-
-		Route::get('/reports/monthy-attendance-report/atendancecard', [MonthlyAttReportController::class,'atendanceCard'])->name('monthy-attendance-report-atendancecard');
-
 	});
 
 	//Monthly Salary Report
@@ -648,9 +710,6 @@ Route::get('/permission', [PermissionController::class,'index']);
 		Route::get('/reports/monthy-salary-report', [MonthlySalaryReportController::class,'index'])->name('monthy-salary-report');
 		Route::get('/reports/monthy-salary-report/setsession', [MonthlySalaryReportController::class,'setsession'])->name('monthy-salary-report-setsession');
 		Route::get('/reports/monthy-salary-report/salaryslip', [MonthlySalaryReportController::class,'salarySlip'])->name('monthy-salary-slip');
-		Route::get('/reports/monthy-salary-report/salarysheet', [MonthlySalaryReportController::class,'salarySheet'])->name('monthy-salary-sheet');
 		Route::post('/reports/monthy-salary-report/fillgrid', [MonthlySalaryReportController::class,'fillGrid'])->name('monthy-salary-report-fillgrid');
-
-		
 	});
 });

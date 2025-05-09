@@ -33,7 +33,7 @@
 			{data:'vcode', name: 'vcode'},
 			{data:'vname', name: 'vname'},
 			{data:'strength', name:'strength'},
-			{data:'Deptgroupname', name:'Deptgroupname'},
+			{data:'deptgroupname', name:'deptgroupname'},
 			{data:'priority', name:'priority'},
 			{data:'action', name: 'action', orderable: false, searchable: false},
 			

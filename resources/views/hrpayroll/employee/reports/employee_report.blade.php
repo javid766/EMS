@@ -37,7 +37,7 @@
 
                         <label for="deptid" class="col-sm-2 col-form-label">{{ __('Department')}}</label>
                         <div class="col-sm-2">
-                           {!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2 ', 'id'=> 'deptid']) !!} 
+                           {!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2 ', 'id'=> 'deptid', 'placeholder' => '--- Select ---']) !!} 
                        </div>
                    </div>
                     <div class="form-group row">

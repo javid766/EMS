@@ -55,15 +55,6 @@ class EmployeeFixTax extends Model
 			DB::select('CALL sp_att_employee_fix_tax_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Empoyee Fix Tax", "ErrorMsg"=>"CALL sp_att_employee_fix_tax_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -125,14 +116,6 @@ class EmployeeFixTax extends Model
 				]
 			);
 
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Empoyee Fix Tax", "ErrorMsg"=>"SET @id = $id; CALL sp_att_employee_fix_tax_insertupdate(@id, NOW(), NOW(), 0, 0, 0, 0, 0, 0, 0, 0, '".$this->utilsModel->SP_ACTION_DELETE."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
-
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Employee Fix Tax deleted successfully', $type, $this->PAGE_LINK);
 
 		} else {
@@ -175,22 +158,6 @@ class EmployeeFixTax extends Model
 			$updatedIp = $request->ip();
 			$companyid = $request->session()->get('companyid', 0);
 		}
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Empoyee Fix Tax", "ErrorMsg"=>"$set_id CALL sp_att_employee_fix_tax_insertupdate(@id, '". date('Y-m-d 00:00:00', strtotime($request->vdate))."', '".date('Y-m-d 00:00:00', strtotime($request->vdatefrom))."', $request->employeeid, $request->amount, $companyid, '".(isset($request->isactive) ? $request->isactive : 0)."', $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_employee_fix_tax_insertupdate(
 			?,
 			"'. date('Y-m-d 00:00:00', strtotime($request->vdate)) .'",

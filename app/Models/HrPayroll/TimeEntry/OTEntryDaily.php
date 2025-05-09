@@ -54,16 +54,15 @@ class OTEntryDaily extends Model
 		$datein = date('Y-m-d 00:00:00', strtotime($request->datein));
 		$dateout = date('Y-m-d 00:00:00', strtotime($request->datein));
 		$employeeid = $request->employeeid;
-		$deptid = $request->get('deptid',0)??-1;
-		$etypeid = $request->get('etypeid',0)??0;
+		$deptid = $request->get('deptid',-1)??-1;
 
 		$OTEntryDaily = OTEntryDaily::hydrate(
-			DB::select('CALL sp_att_timeentry_ot_entry_daily_get('. $id .', '. $employeeid .','. $deptid .','. $etypeid .', "'. $datein .'",  "'. $dateout .'" ,'. $userid .', '. $companyid .', '. $locationid .')')
+			DB::select('CALL sp_att_timeentry_ot_entry_daily_get('. $id .', '. $employeeid .','. $deptid .', "'. $datein .'",  "'. $dateout .'" ,'. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
 		/* Logs for stored procedure starts */
 		$logData = array('LogName'=>"Daily Manual O/T",
-						"ErrorMsg"=>"CALL sp_att_timeentry_ot_entry_daily_get($id,$employeeid,$deptid,$etypeid,'$datein','$dateout',$userid,$companyid,$locationid)");
+						"ErrorMsg"=>"CALL sp_att_timeentry_ot_entry_daily_get($id,$employeeid,$deptid,'$datein','$dateout',$userid,$companyid,$locationid)");
 
 		$this->utilsModel->saveDbLogs($logData);
 		/* Logs for stored procedure ends */
@@ -176,18 +175,10 @@ class OTEntryDaily extends Model
 
 		$vdate = date('Y-m-d 00:00:00', strtotime($request->vdate));
 		$remarks = (isset($request->remarks) ? $request->remarks : '-');
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-		
-
 		/* Logs for stored procedure starts */
 
 		$logData = array('LogName'=>"Daily Manual O/T",
-						"ErrorMsg"=>"$set_id CALL sp_att_timeentry_ot_entry_daily_insertupdate(@id,$request->employeeid,'$vdate','$overtime','$remarks',1,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
+						"ErrorMsg"=>"CALL sp_att_timeentry_ot_entry_daily_insertupdate(@id,$request->employeeid,'$vdate','$overtime','$remarks',1,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
 
 		$this->utilsModel->saveDbLogs($logData);
 		/* Logs for stored procedure starts */

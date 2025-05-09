@@ -56,13 +56,6 @@ class SalaryPosting extends Model
 			DB::select('CALL sp_att_closing_month("'. $dateto .'", '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Salary posting", "ErrorMsg"=>"CALL sp_att_closing_month('".$dateto."', $userid, $companyid, $locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([

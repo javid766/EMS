@@ -53,13 +53,6 @@ class LoanTypes extends Model
 			DB::select('CALL sp_att_setup_loan_types_get('. $id .', '. $userid .', '. $companyid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan Types", "ErrorMsg" =>"CALL sp_att_setup_loan_types_get($id,$userid,$companyid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -114,7 +107,6 @@ class LoanTypes extends Model
 
 		if ($id > 0) {
 
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
 			$result = DB::select('CALL sp_att_setup_loan_types_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -122,14 +114,6 @@ class LoanTypes extends Model
 					$id
 				]
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Loan Types", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_loan_types_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Loan Types deleted successfully', $type, $this->PAGE_LINK);
 
@@ -172,30 +156,12 @@ class LoanTypes extends Model
 			$companyid = $request->session()->get('companyid', 0);
 		}
 
-		$vname = trim($request->vname);
-		$is_active = (isset($request->isactive) ? $request->isactive : 0);
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan Types", "ErrorMsg"=>"$set_id CALL sp_att_setup_loan_types_insertupdate(@id, '$request->vcode', '$vname', $is_active, $companyid, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_setup_loan_types_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname.'",
+			"'. trim($request->vname) .'",
 			'. $companyid .',
-			'. $is_active .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

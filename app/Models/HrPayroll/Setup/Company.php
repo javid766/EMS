@@ -56,18 +56,9 @@ class Company extends Model
 		// 	return $this->utilsModel->returnResponseStatusMessage('error', "Session expired please login again", $type, '/login');
 		// }
 
-		
 		$companies = Company::hydrate(
 			DB::select('CALL sp_setup_company_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Company", "ErrorMsg"=>"CALL sp_setup_company_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
@@ -120,22 +111,9 @@ class Company extends Model
 		return $this->utilsModel->returnResponseStatusMessageExtra('success', 'Company updated successfully', 'id', $id, $type, $this->PAGE_LINK);
 	}
 
-	
-
-
 	public function deleteCompany($id, $type) {
 
 		if ($id > 0) {
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
-
-			/* Logs for stored procedure starts */
-				$logData = array('LogName'=>"Company", "ErrorMsg"=>"SET @id = $id; CALL sp_setup_company_insertupdate(
-				@id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-				$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			$result = DB::select('CALL sp_setup_company_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -212,70 +190,36 @@ class Company extends Model
 
 		}
 
-		$vanme = trim($request->vname);
-		$request_url = (isset($request->url) ? $request->url : '-');
-		$display_url = (isset($request->display_url) ? $request->display_url : '-');
-		$timezone = (isset($request->timezone) ? $request->timezone : '-');
-		$phone = (isset($request->phone) ? $request->phone : '-');
-		$uan = (isset($request->uan) ? $request->uan : '-');
-		$fax = (isset($request->fax) ? $request->fax : '-');
-		$address = (isset($request->address) ? $request->address : '-');
-		$city = (isset($request->city) ? $request->city : '-');
-		$havesaletax = (isset($request->havesaletax) ? $request->havesaletax : 0);
-		$havevat = (isset($request->havevat) ? $request->havevat : 0);
-		$ntn_heading = (isset($request->ntn_heading) ? $request->ntn_heading : '-');
-		$cnic_heading = (isset($request->cnic_heading) ? $request->cnic_heading : '-');
-		$registrationno = (isset($request->registrationno) ? $request->registrationno : '-');
-		$salestaxno = (isset($request->salestaxno) ? $request->salestaxno : '-');
-		$compdateformat = (isset($request->compdateformat) ? $request->compdateformat : '-');
-		$isactive = (isset($request->isactive) ? $request->isactive : 0);
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Company", "ErrorMsg"=>"$set_id CALL sp_setup_company_insertupdate(@id,'$request->vcode', '$vanme', $tid, '$request->company_nature', '$request_url', '$display_url', '$request->logo', '$request->signature_image', '$timezone','$phone','$uan', '$fax', '$address', '$city', $request->countryid, $request->currencyid, $request->shipping_methodid, $havesaletax, '$request->saletaxper', $havevat, '$request->vatper', '$ntn_heading' , '$cnic_heading', '$registrationno', '$salestaxno', '$sqldateformat', '$compdateformat', $isactive, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
-
 		return DB::select('CALL sp_setup_company_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vanme .'",
+			"'. trim($request->vname) .'",
 			'.  $tid .',
 			"'. $request->company_nature .'",
-			"'. $request_url .'",
-			"'. $display_url .'",
+			"'. (isset($request->url) ? $request->url : '-') .'",
+			"'. (isset($request->display_url) ? $request->display_url : '-') .'",
 			"'. $request->logo .'",
 			"'. $request->signature_image .'",
-			"'. $timezone .'",
-			"'. $phone .'",
-			"'. $uan .'",
-			"'. $fax .'",
-			"'. $address .'",
-			"'. $city .'",
+			"'. (isset($request->timezone) ? $request->timezone : '-') .'",
+			"'. (isset($request->phone) ? $request->phone : '-') .'",
+			"'. (isset($request->uan) ? $request->uan : '-') .'",
+			"'. (isset($request->fax) ? $request->fax : '-') .'",
+			"'. (isset($request->address) ? $request->address : '-') .'",
+			"'. (isset($request->city) ? $request->city : '-') .'",
 			'. $request->countryid .',
 			'. $request->currencyid .',
 			'. $request->shipping_methodid .',
-			'. $havesaletax .',
+			'. (isset($request->havesaletax) ? $request->havesaletax : 0) .',
 			"'. $request->saletaxper .'",
-			'. $havevat .',
+			'. (isset($request->havevat) ? $request->havevat : 0) .',
 			"'. $request->vatper .'",
-			"'. $ntn_heading .'",
-			"'. $cnic_heading .'",
-			"'. $registrationno .'",
-			"'. $salestaxno .'",
+			"'. (isset($request->ntn_heading) ? $request->ntn_heading : '-') .'",
+			"'. (isset($request->cnic_heading) ? $request->cnic_heading : '-') .'",
+			"'. (isset($request->registrationno) ? $request->registrationno : '-') .'",
+			"'. (isset($request->salestaxno) ? $request->salestaxno : '-') .'",
 			"'. $sqldateformat .'",
-			"'. $compdateformat .'",
-			'. $isactive .',
+			"'. (isset($request->compdateformat) ? $request->compdateformat : '-') .'",
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'.  $updatedBy .',

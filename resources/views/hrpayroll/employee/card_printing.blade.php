@@ -39,7 +39,7 @@
 
                             <div class="col-md-3">
                                 <label for="deptid" class="col-form-label">{{ __('Department')}}</label>
-                                {!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2', 'id'=> 'deptid']) !!}
+                                {!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2', 'id'=> 'deptid','placeholder'=>'--- Select Department ---']) !!}
                             </div>
 
                             <div class="col-md-3">
@@ -47,7 +47,10 @@
                                {!! Form::select('etypeid',$allEtypes, null, ['class'=>'form-control select2', 'id'=> 'etypeid']) !!}
                            </div>
 
-                            
+                            <div class="col-md-2">                              
+                                <label for="alldepts" class="col-form-label">{{ __('All Departments')}}</label> 
+                                 <span class="form-control input-sm input-checkbox"><input id="alldepts" type="checkbox" name="alldepts" value=""></span>               
+                            </div>
                         </div>
                         <br>
                         <div id="select-emp-err" style="display:none; color: red;">Select Some Employees</div>

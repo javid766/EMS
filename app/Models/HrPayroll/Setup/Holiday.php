@@ -60,13 +60,6 @@ class Holiday extends Model
 			DB::select('CALL sp_att_setup_holiday_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Holiday", "ErrorMsg"=>"CALL sp_att_setup_holiday_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -121,7 +114,6 @@ class Holiday extends Model
 
 		if ($id > 0) {
 
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
 			$result = DB::select('CALL sp_att_setup_holiday_insertupdate(
 				?, 0, 0, 0, NOW(), 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -129,14 +121,6 @@ class Holiday extends Model
 					$id
 				]
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Holiday", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_holiday_insertupdate(@id, 0, 0, 0, NOW(), 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Holiday deleted successfully', $type, $this->PAGE_LINK);
 
@@ -184,33 +168,15 @@ class Holiday extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		$vname = trim($request->vname);
-		$is_active = (isset($request->isactive) ? $request->isactive : 0);
-		$vdate = date('Y-m-d 00:00:00', strtotime($request->vdate));
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Holiday", "ErrorMsg"=>"$set_id CALL sp_att_setup_holiday_insertupdate(@id, '$request->vcode', '$vname', $request->leavetypeid, '$vdate', $companyid, $locationid, $is_active, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		return DB::select('CALL sp_att_setup_holiday_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			'. $request->leavetypeid .',
-			"'. $vdate .'",
+			"'. date('Y-m-d 00:00:00', strtotime($request->vdate)) .'",
 			'. $companyid .',
 			'. $locationid .',
-			'. $is_active .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

@@ -33,15 +33,15 @@
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="amountto" class="col-form-label">{{ __('Amount To')}}</label>
-                                        <input name="amountto" id="amountto" type="number" step="0.01" class="form-control input-sm" width="276" value="{{ old('amountto') }}" placeholder="0.0" required="" />
+                                        <input name="amountto" id="amountto" type="number" class="form-control input-sm" width="276" value="{{ old('amountto') }}" placeholder="0.0" required="" />
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="fixtax" class="col-form-label">{{ __('Fix Tax')}}</label>
-                                        <input name="fixtax" id="fixtax" type="number" step="0.01" class="form-control input-sm" width="276" value="{{ old('fixtax') }}" placeholder="0.0" required="" />
+                                        <input name="fixtax" id="fixtax" type="number" class="form-control input-sm" width="276" value="{{ old('fixtax') }}" placeholder="0.0" required="" />
                                     </div>
                                     <div class="col-sm-2">
                                         <label for="percentage" class="col-form-label">{{ __('Percentage')}}</label>
-                                        <input name="percentage" id="percentage" type="number" step="0.01" class="form-control input-sm" width="276" value="{{ old('percentage') }}" placeholder="0.0" required="" />
+                                        <input name="percentage" id="percentage" type="number" class="form-control input-sm" width="276" value="{{ old('percentage') }}" placeholder="0.0" required="" />
                                     </div>
                                     <div class="col-sm-4">
                                         <label for="remarks" class="col-form-label">{{ __('Remarks')}}</label>

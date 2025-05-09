@@ -11,6 +11,7 @@ use App\Models\HrPayroll\Setup\Grade;
 use App\Models\HrPayroll\Setup\Religion;
 use App\Models\HrPayroll\Setup\Location;
 use App\Models\HrPayroll\Employee\EmployeeInfo;
+use App\Models\HrPayroll\Employee\TrialEmployee;
 use App\Models\HrPayroll\Setup\Bank;
 use App\Models\Utils;
 use App\User;
@@ -38,6 +39,7 @@ class EmployeeInfoController extends Controller
         $this->gradeModel         = new Grade();
         $this->religionModel      = new Religion();
         $this->employeeInfoModel  = new EmployeeInfo();
+        $this->trialEmployeeModel = new TrialEmployee();
         $this->bank               = new Bank();
         $this->utilsModel         = new Utils();
     }
@@ -130,8 +132,6 @@ class EmployeeInfoController extends Controller
             $modelData['emppicImgsrc'] = $imgsrc;
         }
 
-
-
         if($modelData){
         
             return response($modelData);
@@ -148,7 +148,7 @@ class EmployeeInfoController extends Controller
     public function save(Request $request){
 
         if($request->emppic) {
-            
+        
             $file = $request->emppic;
             $file_name = $file->getClientOriginalName();
             $destinationPath = public_path('images/employee/'.str_replace(' ', '-', strtolower($request->empcode)));
@@ -198,17 +198,13 @@ class EmployeeInfoController extends Controller
             return redirect()->back()->withInput($request->input())->with('error', 'Salary should be greater than zero.');
         }
         
-        if(!(isset($request['id']))){
-            $emp_cnicno_validation = EmployeeInfo::where('cnicno', trim($request->cnicno))->first();
+        
+        $emp_cnicno_validation = EmployeeInfo::where('cnicno', trim($request->cnicno))->first();
     
-            if ($emp_cnicno_validation) {
-        
-                return redirect()->back()->withInput($request->input())->with('error', 'An Employee with same National ID already exist');
-            } 
-
-        }
-        
-        
+        if ($emp_cnicno_validation) {
+    
+            return redirect()->back()->withInput($request->input())->with('error', 'An Employee with same National ID already exist');
+        } 
         
         if ($request->dob == $request->doj) {
         

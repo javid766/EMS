@@ -15,25 +15,72 @@
 		var dateto = $('#dateto').val();
 		var attfilter     = $("input[type='radio'][name='attfilter']:checked").val();
 		if (attfilter == 'attcard'){
-
-			$.ajax({
-				url: 'monthy-attendance-report/setsession/',
-				method: "GET",
-				data: {'employeeid':employeeid,'etypeid': etypeid,'locationid':locationid,'deptid':deptid,'datefrom':datefrom,'dateto':dateto,'attfilter':attfilter},
-
-				success:function(data){
-
-					window.open("monthy-attendance-report/atendancecard/", '_blank');
-				
+			document.getElementById("attabsenteelisttable").style.display="none";
+			document.getElementById("attLeaveListtable").style.display="none";
+			document.getElementById("attMonthlySummarytable").style.display="none";
+			document.getElementById("attendancelogstable").style.display="none";
+			document.getElementById("attendancecardtable").style.display="block";
+			var groupColumn = 0;
+			var attcardtable = $('#attcardtable').DataTable({
+				columnDefs: [{ "visible": false, "targets": groupColumn },
+							 { 'targets': 1,
+								render: function (data, type) {
+						             if (data !== null) {
+						                var wrapper = moment(new Date(data));
+						                return wrapper.format("DD-MMM-YYYY");
+						             }
+				        		 }
+				        	}
+				],
+       			order: [[ groupColumn, 'asc' ],[1,'asc']],
+				lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+				processing: true,
+				responsive: true,
+				serverSide: true,
+				destroy:true,
+				paging: true,
+				pageLength: 100,
+				pagingType:'numbers',
+				language: {
+					processing: '<i class="ace-icon fa fa-spinner fa-spin orange bigger-500" style="font-size:60px;margin-top:50px;"></i>',
+					search: "",
+				searchPlaceholder: "Search here..."
 				},
-				error: function(xhr, status, error) {
-					$('.alert').show();
-					$('.alert').addClass('error');
-					$('.alert_msg').text(xhr.responseText);
-				}
-				
-			});
-				
+				scroller: {
+					loadingIndicator: false
+				},
+				dom: "<'row'<'grid-actions col-sm-6'B><'col-sm-6'f>>tipr",
+				ajax: {
+					url:'monthy-attendence-report/fillgrid/',
+					data: {'employeeid':employeeid,'etypeid': etypeid,'locationid':locationid,'deptid':deptid,'datefrom':datefrom,'dateto':dateto,'attfilter':attfilter
+				},
+				type: "get",
+			},
+			columns: [
+			{data:'empdetails', name: 'empdetails'},
+			{data:'vdate', name: 'vdate'},
+			{data:'starttime', name: 'starttime'},
+			{data:'overtime', name: 'overtime'},
+			{data:'tottime', name: 'tottime'},	
+			{data:'attname', name: 'attname'},				
+			],
+
+			drawCallback: function ( settings ) {
+	            var api = this.api();
+	            var rows = api.rows( {page:'current'} ).nodes();
+	            var last=null;
+	 
+	            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+	                if ( last !== group ) {
+	                    $(rows).eq( i ).before(
+	                        '<tr class="rpt-group"><td colspan="7" class="rpt-group-content">'+group+'</td></tr>'
+	                    );
+	 
+	                    last = group;
+	                }
+	            } );
+	        }
+		});
 		}
 		if (attfilter == 'absenteelist'){
 			document.getElementById("attabsenteelisttable").style.display="block";

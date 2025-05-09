@@ -56,7 +56,7 @@ class MonthDaysAttendance extends Model
 		$datein = date('Y-m-d 00:00:00', strtotime($request->datein));
 		$dateout = date('Y-m-d 00:00:00', strtotime($request->dateout));
 	    $employeeid = $request->employeeid;
-	    $deptid = $request->get('deptid',0)??-1;
+	    $deptid = $request->get('deptid',-1)??-1;
 
 		$monthDaysAttendance = MonthDaysAttendance::hydrate(
 			DB::select('CALL sp_att_timeentry_month_days_attendance_get('. $id .', '. $employeeid .', "'. $datein .'",  "'. $dateout .'" , '. $deptid .','. $userid .', '. $companyid .', '. $locationid .')')
@@ -146,16 +146,9 @@ class MonthDaysAttendance extends Model
 		$dateout = (isset($request->attdays) ? $request->attdays : '00.00');
 		$remarks = isset($request->remarks) ? $request->remarks : '-';
 
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-		
-		
 		/* Logs for stored procedure starts */
 		$logData = array('LogName'=>"Month Attendance Days",
-						"ErrorMsg"=>"$set_id CALL sp_att_timeentry_month_days_attendance_insertupdate(@id,$request->employeeid,'$datein','$dateout','$remarks',$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
+						"ErrorMsg"=>"CALL sp_att_timeentry_month_days_attendance_insertupdate(@id,$request->employeeid,'$datein','$dateout','$remarks',$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
 
 	
 		$this->utilsModel->saveDbLogs($logData);

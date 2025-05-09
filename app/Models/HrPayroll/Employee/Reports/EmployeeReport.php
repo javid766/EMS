@@ -53,49 +53,16 @@ class EmployeeReport extends Model
 		}
 		$attEmployeeData = '';	
 		if ($request->attfilter == 'empdetailreport') {
-			$attEmployeeData = DB::select('CALL sp_rpt_att_employee_detail('. $userid .','. $companyid .','. $locationid .', \''.$request->cwhere .' \')');	
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Employee Report", "ErrorMsg"=>"CALL sp_rpt_att_employee_detail($userid,$companyid, $locationid, '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
+			$attEmployeeData = DB::select('CALL sp_rpt_att_employee_detail('. $userid .','. $companyid .','. $locationid .', \''.$request->cwhere .' \')');			
 		}
 		if ($request->attfilter == 'deptwisestrength') {
 			$attEmployeeData = DB::select('CALL sp_rpt_att_employee_strength_deptwise('. $userid .','. $companyid .','. $locationid .', \''.$request->cwhere .' \')');
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Employee Report", "ErrorMsg"=>"CALL sp_rpt_att_employee_strength_deptwise($userid,$companyid, $locationid, '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 		if ($request->attfilter == 'desgwisestrength') {
 			$attEmployeeData = DB::select('CALL sp_rpt_att_employee_strength_desgwise('. $userid .','. $companyid .','. $locationid .', \''.$request->cwhere .' \')');
-
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Employee Report", "ErrorMsg"=>"CALL sp_rpt_att_employee_strength_desgwise($userid,$companyid, $locationid, '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 		if ($request->attfilter == 'empcardreport') {
 			$attEmployeeData = DB::select('CALL sp_rpt_att_employee_detail('. $userid .','. $companyid .','. $locationid .', \''.$request->cwhere .' \')');
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Employee Report", "ErrorMsg"=>"CALL sp_rpt_att_employee_detail($userid,$companyid, $locationid, '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-			
 		}
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 

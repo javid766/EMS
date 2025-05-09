@@ -11,7 +11,6 @@
          }
          .sslipmain{
             border: 1px solid #000;
-            margin-bottom: 20px;
          }
          .ssliphead{
             border-bottom: 1px solid #000;
@@ -244,12 +243,13 @@
                $netpayable = 'PKR. '.$netpayable;
             }
 
-            $grade = $value->grade;
-            $empStatus = $value->empstatus;
-            $ytdIncome = $value->ytdincome;
-            $ytdTax = $value->ytdtax;
-            $ntnNo = $value->ntnno;
-      
+            $grade = $value['grade'];
+            $empStatus = $value['empstatus'];
+            $ytdIncome = $value['ytdIncome'];
+            $ytdTax = $value['ytdTax'];
+            $ntnNo = $value['ntnNo'];
+         }
+      }
       ?>
       <div class="sslipmain">
          <div class="ssliphead">
@@ -377,10 +377,6 @@
             </table>
          </div>   
       </div> 
-      <?php    
-      }
-      }
-      ?>
    </body>
    </html>
 

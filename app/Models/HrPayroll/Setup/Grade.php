@@ -60,13 +60,6 @@ class Grade extends Model
 			DB::select('CALL sp_att_setup_grade_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Grades", "ErrorMsg"=>"CALL sp_att_setup_grade_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -119,7 +112,7 @@ class Grade extends Model
 	public function deleteGrade($id, $type) {
 
 		if ($id > 0) {
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
+
 			$result = DB::select('CALL sp_att_setup_grade_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -127,13 +120,6 @@ class Grade extends Model
 					$id
 				]
 			)[0];
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Grades", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_grade_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
 
 			if ($result->status == $this->utilsModel->API_VALIDATION_ERROR) {
 				return $this->utilsModel->returnResponseStatusMessage('error', $result->msg, $type, $this->PAGE_LINK);
@@ -180,29 +166,12 @@ class Grade extends Model
 			$companyid = $request->session()->get('companyid', 0);
 		}
 
-		$vname = trim($request->vname);
-		$is_active = (isset($request->isactive) ? $request->isactive : 0);
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Grades", "ErrorMsg"=>"$set_id CALL sp_att_setup_grade_insertupdate(@id, '$request->vcode', '$vname', $companyid, $is_active, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		return DB::select('CALL sp_att_setup_grade_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			'. $companyid .',
-			'. $is_active .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

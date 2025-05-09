@@ -54,62 +54,21 @@ class MonthlyAttReport extends Model
 		// dd('CALL sp_rpt_att_m_card('. $userid .', '. $companyid .','. $locationid .' , \''.$request->cwhere .' \',"'. $request->datefrom .'","'. $request->dateto .'")');
 		if ($request->attfilter == 'attcard') {
 			$attMonthlyData = DB::select('CALL sp_rpt_att_m_card('. $userid .', '. $companyid .','. $locationid .' , \''.$request->cwhere .' \',"'. $request->datefrom .'","'. $request->dateto .'")');
-
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Monthly Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_m_card($userid, $companyid, $locationid, '".$request->cwhere."', '".$request->datefrom."', '".$request->dateto."' )");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 	
 		if ($request->attfilter == 'absenteelist') {
 			$attMonthlyData = DB::select('CALL sp_rpt_att_m_absentees('. $userid .', '. $companyid .','. $locationid .' , \''.$request->cwhere .' \',"'. $request->datefrom .'","'. $request->dateto .'")');
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Monthly Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_m_absentees($userid, $companyid, $locationid, '".$request->cwhere."', '".$request->datefrom."', '".$request->dateto."' )");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 		if ($request->attfilter == 'attmsummary') {
 			$attMonthlyData = DB::select('CALL sp_rpt_att_m_summary('. $userid .', '. $companyid .','. $locationid .' , \''.$request->cwhere .' \',"'. $request->datefrom .'","'. $request->dateto .'")');
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Monthly Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_m_summary($userid, $companyid, $locationid, '".$request->cwhere."', '".$request->datefrom."', '".$request->dateto."' )");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 		}
 
 		if ($request->attfilter == 'attlogs') {
 			$attMonthlyData = DB::select('CALL sp_rpt_att_m_attendance('. $userid .', '. $companyid .','. $locationid .' , \''.$request->cwhere .' \',"'. $request->datefrom .'","'. $request->dateto .'")');
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Monthly Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_m_attendance($userid, $companyid, $locationid, '".$request->cwhere."', '".$request->datefrom."', '".$request->dateto."' )");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 		if ($request->attfilter == 'leavelist') {
 			$attMonthlyData = DB::select('CALL sp_rpt_att_m_leave('. $userid .', '. $companyid .','. $locationid .' , \''.$request->cwhere .' \',"'. $request->datefrom .'","'. $request->dateto .'")');
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Monthly Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_m_leave($userid, $companyid, $locationid, '".$request->cwhere."', '".$request->datefrom."', '".$request->dateto."' )");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-			
 		}
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 

@@ -14,10 +14,10 @@
 		var datein = $('#datein').val();
 		var attfilter = $("input[type='radio'][name='attfilter']:checked").val();
 		if (attfilter == 'salaryslippdf') {
-			// if (employeeid == '') {
-			// 	validateEmloyeeSalarySlip();
-			// }
-			if (datein == '') {
+			if (employeeid == '') {
+				validateEmloyeeSalarySlip();
+			}
+			else if (datein == '') {
 				validateDateSalarySlip();
 			}
 			else{
@@ -41,106 +41,78 @@
 				
 			}
 		}
-		if (attfilter == 'salsheetcash' || attfilter == 'salsheetcheque' || attfilter == 'salsheetcomplete' || attfilter == 'finalsettlement') {
-			// if (employeeid == '') {
-			// 	validateEmloyeeSalarySlip();
-			// }
-			if (datein == '') {
-				validateDateSalarySlip();
-			}
-			else{
-				$.ajax({
-				url: 'monthy-salary-report/setsession/',
-				method: "GET",
-				data: {'employeeid':employeeid,'etypeid': etypeid,'locationid':locationid,'deptid':deptid,'datein':datein,'attfilter':attfilter},
+		if (attfilter == 'salsheetcash' || attfilter == 'salsheetcheque' || attfilter == 'salsheetcomplete' || attfilter == 'finalsettlement'){
+			document.getElementById("attMonthlySaltable").style.display = "block";
+			document.getElementById("attMonthlySalSumtable").style.display = "none";
+			document.getElementById("attEmpSalHistorytable").style.display = "none";
+			document.getElementById("attAdvanceDeductionSheettable").style.display = "none";
+			document.getElementById("attAdvanceDeductionSummarytable").style.display = "none";
 
-				success:function(data){
-
-					window.open("monthy-salary-report/salarysheet/", '_blank');
-				
+			var groupColumn = 2;
+			var table = $('#monthlySaltable').DataTable({
+				columnDefs: [{ "visible": false, "targets": groupColumn }],
+       			order: [[ groupColumn, 'asc' ]],
+				lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+				processing: true,
+				responsive: true,
+				serverSide: true,
+				processing: true,
+				paging: false,
+				language: {
+					processing: '<i class="ace-icon fa fa-spinner fa-spin orange bigger-500" style="font-size:60px;margin-top:50px;"></i>',
+					search: "",
+					searchPlaceholder: "Search here..."
 				},
-				error: function(xhr, status, error) {
-					$('.alert').show();
-					$('.alert').addClass('error');
-					$('.alert_msg').text(xhr.responseText);
-				}
-				
-			})
-				
-			}
-		}
-	// 	if (attfilter == 'salsheetcheque' || attfilter == 'salsheetcomplete' || attfilter == 'finalsettlement'){
-	// 		document.getElementById("attMonthlySaltable").style.display = "block";
-	// 		document.getElementById("attMonthlySalSumtable").style.display = "none";
-	// 		document.getElementById("attEmpSalHistorytable").style.display = "none";
-	// 		document.getElementById("attAdvanceDeductionSheettable").style.display = "none";
-	// 		document.getElementById("attAdvanceDeductionSummarytable").style.display = "none";
+				scroller: {
+					loadingIndicator: false
+				},
+				dom: "<'row'<'grid-actions col-sm-6'B><'col-sm-6'f>>tipr",
 
-	// 		var groupColumn = 2;
-	// 		var table = $('#monthlySaltable').DataTable({
-	// 			columnDefs: [{ "visible": false, "targets": groupColumn }],
- //       			order: [[ groupColumn, 'asc' ]],
-	// 			lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-	// 			processing: true,
-	// 			responsive: true,
-	// 			serverSide: true,
-	// 			processing: true,
-	// 			paging: false,
-	// 			language: {
-	// 				processing: '<i class="ace-icon fa fa-spinner fa-spin orange bigger-500" style="font-size:60px;margin-top:50px;"></i>',
-	// 				search: "",
-	// 				searchPlaceholder: "Search here..."
-	// 			},
-	// 			scroller: {
-	// 				loadingIndicator: false
-	// 			},
-	// 			dom: "<'row'<'grid-actions col-sm-6'B><'col-sm-6'f>>tipr",
-
-	// 			ajax: {
-	// 				url:'monthy-salary-report/fillgrid',
-	// 				data: {'employeeid':employeeid,'etypeid': etypeid,'locationid':locationid,'deptid':deptid,'datein':datein,'attfilter':attfilter, '_token': token
-	// 			},
-	// 			type: 'POST',
-	// 			dataType:"JSON",
-	// 		},
-	// 		destroy:true,
-	// 		columns: [
-	// 		{data:'empcode', name: 'empcode',width:'6%'},
-	// 		{data:'employeename', name: 'employeename',width:'15%'},
-	// 		{data:'department', name: 'department'},
-	// 		{data:'designation', name: 'designation',width:'15%'},
-	// 		{data:'salary', name: 'salary',width:'5%'},
-	// 		{data:'workingdays', name: 'workingdays',width:'6%'},
-	// 		{data:'salarydays', name: 'salarydays',width:'5%'},
-	// 		{data:'overtime', name: 'overtime'},
-	// 		{data:'allowance1', name: 'allowance1'},			
-	// 		{data:'calculatedsalary', name: 'calculatedsalary',width:'6%'},
-	// 		{data:'incometax', name: 'incometax',width:'5%'},
-	// 		{data:'advance', name: 'advance'},
-	// 		{data:'loan', name: 'loan'},		
-	// 		{data:'deduction1', name: 'deduction1'},		
-	// 		{data:'netsalary', name: 'netsalary',width:'5%'},
-	// 		],
+				ajax: {
+					url:'monthy-salary-report/fillgrid',
+					data: {'employeeid':employeeid,'etypeid': etypeid,'locationid':locationid,'deptid':deptid,'datein':datein,'attfilter':attfilter, '_token': token
+				},
+				type: 'POST',
+				dataType:"JSON",
+			},
+			destroy:true,
+			columns: [
+			{data:'empcode', name: 'empcode',width:'6%'},
+			{data:'employeename', name: 'employeename',width:'15%'},
+			{data:'department', name: 'department'},
+			{data:'designation', name: 'designation',width:'15%'},
+			{data:'salary', name: 'salary',width:'5%'},
+			{data:'workingdays', name: 'workingdays',width:'6%'},
+			{data:'salarydays', name: 'salarydays',width:'5%'},
+			{data:'overtime', name: 'overtime'},
+			{data:'allowance1', name: 'allowance1'},			
+			{data:'calculatedsalary', name: 'calculatedsalary',width:'6%'},
+			{data:'incometax', name: 'incometax',width:'5%'},
+			{data:'advance', name: 'advance'},
+			{data:'loan', name: 'loan'},		
+			{data:'deduction1', name: 'deduction1'},		
+			{data:'netsalary', name: 'netsalary',width:'5%'},
+			],
 
 
-	// 		drawCallback: function ( settings ) {
-	//             var api = this.api();
-	//             var rows = api.rows( {page:'current'} ).nodes();
-	//             var last=null;
+			drawCallback: function ( settings ) {
+	            var api = this.api();
+	            var rows = api.rows( {page:'current'} ).nodes();
+	            var last=null;
 	 
-	//             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
-	//                 if ( last !== group ) {
-	//                     $(rows).eq( i ).before(
-	//                         '<tr class="dept-group"><td colspan="15">'+group+'</td></tr>'
-	//                     );
+	            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+	                if ( last !== group ) {
+	                    $(rows).eq( i ).before(
+	                        '<tr class="dept-group"><td colspan="15">'+group+'</td></tr>'
+	                    );
 	 
-	//                     last = group;
-	//                 }
-	//             } );
-	//         }
+	                    last = group;
+	                }
+	            } );
+	        }
 
-	// 	});
-	// }
+		});
+	}
 
 	if(attfilter == 'salarysummarycash'|| attfilter == 'salarysummarycheque'
 	    || attfilter == 'summarycomplete' || attfilter == 'finalsettlementsummary'){

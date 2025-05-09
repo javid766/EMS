@@ -70,14 +70,6 @@ class SalLoanDeduct extends Model
 			DB::select('CALL sp_att_sal_loan_deduct_get('. $id .', '. $employeeid .', "'. $datein .'", "'. $dateout .'", '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan Deduction", "ErrorMsg"=>"CALL sp_att_sal_loan_deduct_get($id, $employeeid, '".$datein."', '".$dateout."', $userid,$companyid, $locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -144,9 +136,6 @@ class SalLoanDeduct extends Model
 				]
 			);
 
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Loan Deduction", "ErrorMsg"=>"SET @id = $id; CALL sp_att_sal_loan_deduct_insertupdate(@id, 0, 0, 0, NOW(), 0, 0, 0, 0, 0, 0, '".$this->utilsModel->SP_ACTION_DELETE."')");
-
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Loan Deduction record deleted successfully', $type, $this->PAGE_LINK);
 
 		} else {
@@ -193,23 +182,6 @@ class SalLoanDeduct extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 		
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan Deduction", "ErrorMsg"=>"$set_id CALL sp_att_sal_loan_deduct_insertupdate(@id, '".$request->loanvno."', '".date('Y-m-d 00:00:00', strtotime($request->datein))."', $request->loanid, $request->employeeid, '".$request->refno."', $request->amount, '".$request->remarks."', 1, $companyid, $locationid,  $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
-
 		return DB::select('CALL sp_att_sal_loan_deduct_insertupdate(
 			?,
 			"'. $request->loanvno .'",

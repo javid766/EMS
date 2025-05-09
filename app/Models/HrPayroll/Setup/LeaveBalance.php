@@ -60,14 +60,6 @@ class LeaveBalance extends Model
 			DB::select('CALL sp_att_setup_leave_balance_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Leave Balance", "ErrorMsg"=>"CALL sp_att_setup_leave_balance_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -123,8 +115,6 @@ class LeaveBalance extends Model
 
 		if ($id > 0) {
 
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
-
 			$result = DB::select('CALL sp_att_setup_leave_balance_insertupdate(
 				?, 0, 0, 0, NOW(), NOW(), 0, 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -132,13 +122,6 @@ class LeaveBalance extends Model
 					$id
 				]
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Leave Balance", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_leave_balance_insertupdate(@id, 0, 0, 0, NOW(), NOW(), 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
 
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Leave Balance deleted successfully', $type, $this->PAGE_LINK);
 
@@ -188,37 +171,17 @@ class LeaveBalance extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		$vname = trim($request->vname);
-		$is_active = (isset($request->isactive) ? $request->isactive : 0);
-		$datein = date('Y-m-d H:m:s', strtotime($request->datein));
-		$dateout = date('Y-m-d H:m:s', strtotime($request->dateout));
-
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Leave Balance", "ErrorMsg"=>"$set_id CALL sp_att_setup_leave_balance_insertupdate(@id, '$request->vcode', '$vname', $request->attgroupid, '$datein', '$dateout', $request->leavelimit, $companyid, $locationid,  $is_active, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_setup_leave_balance_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			'. $request->attgroupid .',
-			"'. $datein .'",
-			"'. $dateout .'",
+			"'. date('Y-m-d H:m:s', strtotime($request->datein)) .'",
+			"'. date('Y-m-d H:m:s', strtotime($request->dateout)) .'",
 			'. $request->leavelimit .',
 			'. $companyid .',
 			'. $locationid .',
-			'. $is_active .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

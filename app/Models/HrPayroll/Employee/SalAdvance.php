@@ -56,13 +56,6 @@ class SalAdvance extends Model
 			DB::select('CALL sp_att_sal_advance_get('. $id .', '. $request->employeeid .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Advance against Salary", "ErrorMsg"=>"CALL sp_att_sal_advance_get($id, $request->employeeid, $userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -127,14 +120,6 @@ class SalAdvance extends Model
 				]
 			);
 
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Advance against Salary", "ErrorMsg"=>"SET @id = $id; CALL sp_att_sal_advance_insertupdate(@id, 0, 0, 0, 0, NOW(),NOW(),0, 0, 0, 0, 0, 0, 0, '".$this->utilsModel->SP_ACTION_DELETE."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
-
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Salary Advance deleted successfully', $type, $this->PAGE_LINK);
 
 		} else {
@@ -183,21 +168,6 @@ class SalAdvance extends Model
 			$companyid = $request->session()->get('companyid', 0);
 			$locationid = $request->session()->get('locationid', 0);
 		}
-
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Advance against Salary", "ErrorMsg"=>"$set_id CALL sp_att_sal_advance_insertupdate(@id, $request->employeeid, $request->amount, $request->bankid, '".$request->chequeno."', '".date('Y-m-d 00:00:00', strtotime($request->chequedate))."', '".date('Y-m-d 00:00:00', strtotime($request->datein))."', '".$request->remarks."', $companyid, $locationid,  $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
 
 		return DB::select('CALL sp_att_sal_advance_insertupdate(
 			?,

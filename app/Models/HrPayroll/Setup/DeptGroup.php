@@ -56,14 +56,6 @@ class DeptGroup extends Model
 			DB::select('CALL sp_att_setup_dept_group_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Department Group", "ErrorMsg"=>"CALL sp_att_setup_dept_group_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -118,8 +110,6 @@ class DeptGroup extends Model
 
 		if ($id > 0) {
 
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
-
 			$result = DB::select('CALL sp_att_setup_dept_group_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -127,15 +117,6 @@ class DeptGroup extends Model
 					$id
 				]
 			)[0];
-
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Department Group", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_dept_group_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			if ($result->status == $this->utilsModel->API_VALIDATION_ERROR) {
 				return $this->utilsModel->returnResponseStatusMessage('error', $result->msg, $type, $this->PAGE_LINK);
@@ -207,24 +188,6 @@ class DeptGroup extends Model
 			$companyid = $request->session()->get('companyid', 0);
 		}
 
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-		$VName = trim($request->VName);
-		$isactive = (isset($request->isactive) ? $request->isactive : 0);
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Department Group", "ErrorMsg"=>"$set_id CALL sp_att_setup_dept_group_insertupdate(@id, '$request->vcode', '$VName', '$request->SalariesPermanent', '$request->SalariesContract', '$request->AllowancePermanent', '$request->AllowanceContract', '$request->AdvancePermanent', '$request->AdvanceContract', '$request->LoanPermanent', '$request->LoanContract', '$request->OverTimePermanent', '$request->OverTimeContract', '$request->TaxPermanent', '$request->TaxContract' , '$request->OtherIncomePermanent', '$request->OtherIncomeContract', '$request->SalaryPayablePermanent', '$request->SalaryPayableContract', '$request->EmployeePFPermanent', '$request->EmployeePFContract', '$request->EmployerPFPermanent', '$request->EmployerPFContract', '$request->EmployeeEOBIPermanent', '$request->EmployeeEOBIContract', '$request->EmployerEOBIPermanent', '$request->EmployerEOBIContract', $companyid, $isactive, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_setup_dept_group_insertupdate(
 			?,
 			"'. $request->vcode .'",
@@ -254,7 +217,7 @@ class DeptGroup extends Model
 			"'. $request->EmployerEOBIPermanent .'",
 			"'. $request->EmployerEOBIContract .'",
 			'. $companyid .',
-			'. $isactive .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

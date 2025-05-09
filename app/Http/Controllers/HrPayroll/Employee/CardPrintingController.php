@@ -54,13 +54,19 @@ class CardPrintingController extends Controller
 
     public function fill(Request $request, $id=0){
         if(!$request->deptid){
-            $request['deptid'] = -1;
+            $request['deptid'] = 0;
         }
         if(!$request->locationid){
             $request['locationid'] = 0;
         }
         if(!$request->etypeid){
             $request['etypeid'] = 0;
+        }
+        if($request->alldepts == 'false'){
+            $request['alldepts'] = 0;
+        }
+        else if($request->alldepts == 'true'){
+            $request['alldepts'] = 1;
         }
 
         $modelData = $this->cardPrintingModel->getEmployees($request, $id, $this->utilsModel->CALL_TYPE_DEFAULT);
@@ -97,29 +103,45 @@ class CardPrintingController extends Controller
 
         array_multisort($empcode, SORT_ASC, $empData);
 
-        $page_limit = 4;
         $num   = sizeof($empData);
+        $data = array();
+        
+        if ($num > 0 && $num > 4) {
+           
+           $count = 0; 
+           $i = 1;
+           
+           foreach ($empData as $key => $value) {
 
-        if ($num > 0 && $num > $page_limit) {
-
-            $empcode_groups = array_chunk($empData, $page_limit);
-            foreach ($empcode_groups as $key => $value) {
-
-                $filename = 'empcard'.'-'.$key.'.pdf';
-                $carddata = ['empcarddata' => $value];
-                $pdf = PDF::loadView('hrpayroll.employee.cardprinting.cardprinting_pdf', $carddata);
-                $pdf->save(base_path('cardprinting_pdfs/'.$filename));
+                $filename = 'empcard'.'-'.$i.'.pdf';
+            
+                if ($count != 4) {
+            
+                    $data[$i][$key] = $value;
+                }
+            
+                if ($count == 4) {
+            
+                    $carddata = ['empcarddata' => $data[$i]];
+                    $pdf = PDF::loadView('hrpayroll.employee.cardprinting.cardprinting_pdf', $carddata);
+                    $pdf->save(base_path('cardprinting_pdfs/'.$filename));
+                    $i++;
+                    $count = -1;
+                    $data = array();
+                }
+                
+                $count++;
             }
-
+            
             $files = array_diff(scandir(base_path('cardprinting_pdfs/')), array('..', '.'));
-    
+            
             natsort($files);
             
             foreach ($files as $file) {
             
                 $pdfMerger->addPDF(base_path('cardprinting_pdfs/'.$file), 'all');
             }
-
+            
             $pdfMerger->merge();
             $pdfMerger->save(base_path('cardprinting_pdfs/empcardprintingfinal.pdf'), "file");
             $filename = 'empcardprintingfinal.pdf';
@@ -130,9 +152,7 @@ class CardPrintingController extends Controller
                 'Content-Disposition' => 'inline; filename="'.$filename.'"'
             ]);
 
-
-
-        }else{
+        } else {
 
             $carddata = ['empcarddata' => $empData];
             $pdf = PDF::loadView('hrpayroll.employee.cardprinting.cardprinting_pdf', $carddata);
@@ -144,89 +164,7 @@ class CardPrintingController extends Controller
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="'.$filename.'"'
             ]);
-
         }
-        
-    
-        // $num   = sizeof($empData);
-        // $data = array();
-       
-        // $number_of_pages = ceil($num/$page_limit);
-        
-
-        // if ($num > 0 && $num > $page_limit) {
-           
-        //    $count = 1; 
-        //    $i = 1;
-        //    $remaining_records = $num % $page_limit;
-
-           
-        //     foreach ($empData as $key => $value) {
-
-        //         $filename = 'empcard'.'-'.$i.'.pdf';
-           
-        //         if ($count < $page_limit+1) {
-            
-        //             $data[$i][$key] = $value;
-        //         }
-
-        //         if ($count == $page_limit) {
-            
-        //             $carddata = ['empcarddata' => $data[$i]];
-        //             $pdf = PDF::loadView('hrpayroll.employee.cardprinting.cardprinting_pdf', $carddata);
-        //             $pdf->save(base_path('cardprinting_pdfs/'.$filename));
-        //             $i++;
-        //             $count = 0;
-        //             $data = array();
-        //         }
-                
-        //         $count++;
-        //     }
-
-        //     if($remaining_records > 0){
-
-        //         $remaining_empData = array_slice($empData, -$remaining_records, $remaining_records, true);
-        //         $filename = 'empcard'.'-'.$number_of_pages.'.pdf';
-
-        //         $carddata = ['empcarddata' => $remaining_empData];
-        //         $pdf = PDF::loadView('hrpayroll.employee.cardprinting.cardprinting_pdf', $carddata);
-        //         $pdf->save(base_path('cardprinting_pdfs/'.$filename));   
-        //         $path = base_path('cardprinting_pdfs/'.$filename);
-        //     }
-
-
-        //     $files = array_diff(scandir(base_path('cardprinting_pdfs/')), array('..', '.'));
-            
-        //     natsort($files);
-            
-        //     foreach ($files as $file) {
-            
-        //         $pdfMerger->addPDF(base_path('cardprinting_pdfs/'.$file), 'all');
-        //     }
-            
-        //     $pdfMerger->merge();
-        //     $pdfMerger->save(base_path('cardprinting_pdfs/empcardprintingfinal.pdf'), "file");
-        //     $filename = 'empcardprintingfinal.pdf';
-        //     $path = base_path('cardprinting_pdfs/'.$filename);
-            
-        //     return Response::make(file_get_contents($path), 200, [
-        //         'Content-Type' => 'application/pdf',
-        //         'Content-Disposition' => 'inline; filename="'.$filename.'"'
-        //     ]);
-
-        // } else {
-
-            // $carddata = ['empcarddata' => $empData];
-            // $pdf = PDF::loadView('hrpayroll.employee.cardprinting.cardprinting_pdf', $carddata);
-            // $filename = 'empcardprintingfinal.pdf';
-            // $pdf->save(base_path('cardprinting_pdfs/'.$filename));   
-            // $path = base_path('cardprinting_pdfs/'.$filename);
-            
-            // return Response::make(file_get_contents($path), 200, [
-            //     'Content-Type' => 'application/pdf',
-            //     'Content-Disposition' => 'inline; filename="'.$filename.'"'
-            // ]);
-        //}
         
     }
 

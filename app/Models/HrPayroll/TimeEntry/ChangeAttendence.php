@@ -54,8 +54,8 @@ class ChangeAttendence extends Model
 		$datein = date('Y-m-d 00:00:00', strtotime($request->vdate));
 		$dateout = date('Y-m-d 00:00:00', strtotime($request->vdate . ' +1 day'));
 		$employeeid = $request->employeeid;
-		$deptid = $request->get('deptid', 0)??-1;
-		$etypeid = $request->get('etypeid',0)??0;
+		$deptid = $request->get('deptid',-1)??-1;
+		$etypeid = $request->get('etypeId',0)??0;
 
 
 		$ChangeAttendence = ChangeAttendence::hydrate(
@@ -158,15 +158,9 @@ class ChangeAttendence extends Model
 		$dateout = date('Y-m-d H:i:s', strtotime("$request->dateout"));
 		$remarks = isset($request->remarks) ? $request->remarks : '-';
 
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-		
 		/* Logs for stored procedure starts */
 		$logData = array('LogName'=>"Change Attendence",
-						"ErrorMsg"=>"$set_id CALL sp_att_timeentry_change_attendance_insertupdate(@id,$request->employeeid,'$datein','$dateout','$remarks',0,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
+						"ErrorMsg"=>"CALL sp_att_timeentry_change_attendance_insertupdate(@id,$request->employeeid,'$datein','$dateout','$remarks',0,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
 
 	
 		$this->utilsModel->saveDbLogs($logData);

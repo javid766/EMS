@@ -60,14 +60,6 @@ class Location extends Model
 			DB::select('CALL sp_setup_location_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Location", "ErrorMsg"=>"CALL sp_setup_location_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -121,7 +113,7 @@ class Location extends Model
 	public function deleteLocation($id, $type) {
 
 		if ($id > 0) {
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
+
 			$result = DB::select('CALL sp_setup_location_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -129,15 +121,6 @@ class Location extends Model
 					$id
 				]
 			)[0];
-
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Location", "ErrorMsg"=>"SET @id = $id; CALL sp_setup_location_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			if ($result->status == $this->utilsModel->API_VALIDATION_ERROR) {
 				return $this->utilsModel->returnResponseStatusMessage('error', $result->msg, $type, $this->PAGE_LINK);
@@ -190,26 +173,10 @@ class Location extends Model
 			$updatedIp = $request->ip();
 		}
 
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-		$vname = trim($request->vname);
-		$isactive = (isset($request->isactive) ? $request->isactive : 0);
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Location", "ErrorMsg"=>"$set_id CALL sp_setup_location_insertupdate(@id, '$request->vcode', '$vname', $companyid, '$request->address', '$request->state', '$request->zip', '$request->countryid','$request->telephone', '$request->tollfree', $isactive, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		return DB::select('CALL sp_setup_location_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			'. $companyid .',
 			"'. $request->address .'",
 			"'. $request->state .'",
@@ -217,7 +184,7 @@ class Location extends Model
 			'. $request->countryid .',
 			"'. $request->telephone .'",
 			"'. $request->tollfree .'",
-			'. $isactive .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

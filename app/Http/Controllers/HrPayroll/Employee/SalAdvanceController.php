@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\HrPayroll\Setup\Bank;
 use App\Models\HrPayroll\Employee\EmployeeInfo;
 use App\Models\HrPayroll\Employee\SalAdvance;
-// use App\Models\HrPayroll\Setup\FinancialYear;
+use App\Models\HrPayroll\Setup\FinancialYear;
 use App\Models\Utils;
 use App\User;
 use DataTables,Auth;
@@ -23,7 +23,7 @@ class SalAdvanceController extends Controller
     public function __construct() {
         $this->employeeInfoModel = new EmployeeInfo();
         $this->salAdvanceModel = new SalAdvance();
-        // $this->accFinancialYearModel = new FinancialYear();
+        $this->accFinancialYearModel = new FinancialYear();
         $this->banksModel = new Bank();
         $this->utilsModel = new Utils();
     }
@@ -83,10 +83,10 @@ class SalAdvanceController extends Controller
 
     public function save(Request $request){
 
-        // $flag = $this->validateFinancialYear($request);
-        // if (empty($flag)) {
-        //      return redirect()->back()->withInput($request->input())->with('error' , "Please select Date in between Financial Year");
-        // }
+        $flag = $this->validateFinancialYear($request);
+        if (empty($flag)) {
+             return redirect()->back()->withInput($request->input())->with('error' , "Please select Date in between Financial Year");
+        }
 
         if($request->id){
             $id=$request->id;
@@ -119,8 +119,8 @@ class SalAdvanceController extends Controller
         return $employeeInfoData;
     }
     
-    // public function validateFinancialYear(Request $request){
-    //     return $this->accFinancialYearModel->validateFinancialYear($request,0, $this->utilsModel->CALL_TYPE_DEFAULT)->toArray();
-    // }
+    public function validateFinancialYear(Request $request){
+        return $this->accFinancialYearModel->validateFinancialYear($request,0, $this->utilsModel->CALL_TYPE_DEFAULT)->toArray();
+    }
 
 }

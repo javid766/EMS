@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\HrPayroll\Setup\LoanTypesController;
 use App\Http\Controllers\Api\HrPayroll\Setup\SaleTypesController;
 use App\Http\Controllers\Api\HrPayroll\Setup\Currency\CurrencyController;
 use App\Http\Controllers\Api\HrPayroll\Setup\Currency\CurrencyExchangeController;
+use App\Http\Controllers\Api\HrPayroll\Setup\FinancialYearController;
 use App\Http\Controllers\Api\HrPayroll\Setup\DeptController;
 use App\Http\Controllers\Api\HrPayroll\Setup\DesgController;
 use App\Http\Controllers\Api\HrPayroll\Setup\ETypeController;
@@ -51,12 +52,17 @@ use App\Http\Controllers\Api\HrPayroll\Setup\AllowdedGroupController;
 use App\Http\Controllers\Api\HrPayroll\Setup\ProbationStatusController;
 use App\Http\Controllers\Api\HrPayroll\Setup\EntitlementTypeController;
 use App\Http\Controllers\Api\HrPayroll\Setup\AnnouncementController;
+use App\Http\Controllers\Api\HrPayroll\Setup\AttRosterShiftController;
 use App\Http\Controllers\Api\Attendence\Transaction\AttendanceController;
 use App\Http\Controllers\Api\Attendence\Transaction\LeaveController;
+use App\Http\Controllers\Api\Attendence\Transaction\ClosingMonthController;
+
 use App\Http\Controllers\Api\HrPayroll\Reports\SalarySlipController;
 
 //Employee Routes
 use App\Http\Controllers\Api\HrPayroll\Employee\EmployeeInfoController;
+use App\Http\Controllers\Api\HrPayroll\Employee\TrialEmployeeEntryController;
+use App\Http\Controllers\Api\HrPayroll\Employee\EmployeeTransferController;
 use App\Http\Controllers\Api\HrPayroll\Employee\FixTaxController;
 use App\Http\Controllers\Api\HrPayroll\Employee\LocalSaleController;
 use App\Http\Controllers\Api\HrPayroll\Employee\LoanEntryController; 
@@ -74,6 +80,7 @@ use App\Http\Controllers\Api\HrPayroll\TimeEntry\ChangeAttendenceController;
 use App\Http\Controllers\Api\HrPayroll\TimeEntry\OTEntryDailyController;
 use App\Http\Controllers\Api\HrPayroll\TimeEntry\OTEntryMonthlyController;
 use App\Http\Controllers\Api\HrPayroll\TimeEntry\MonthDaysAttendanceController;
+use App\Http\Controllers\Api\HrPayroll\TimeEntry\RosterEntryController;
 
 //Attendance Report
 use App\Http\Controllers\Api\HrPayroll\Reports\DailyAttReportController;
@@ -178,7 +185,14 @@ Route::group(['middleware' => 'auth:api'], function(){
 	// User Routes End
 
 	// Account Routes Start
-	
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_FINANCIAL_YEAR], function(){
+		Route::post('/account/financial-years', [FinancialYearController::class,'list']);
+		Route::post('/account/financial-years/create', [FinancialYearController::class,'create']);
+		Route::post('/account/financial-years/update/{id}', [FinancialYearController::class,'update']);
+		Route::get('/account/financial-years/delete/{id}', [FinancialYearController::class,'delete']);
+		Route::post('/account/financial-years/{id}', [FinancialYearController::class,'list']);
+	});
+
 	// Account Routes End
 
 	// Setup Routes Start
@@ -273,6 +287,14 @@ Route::group(['middleware' => 'auth:api'], function(){
 		Route::post('/announcement/update/{id}', [AnnouncementController::class,'update']);
 		Route::get('/announcement/delete/{id}', [AnnouncementController::class,'delete']);
 		Route::post('/announcement/{id}', [AnnouncementController::class,'list']);
+	});
+
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_ATT_ROSTER_SHIFT], function(){
+		Route::post('/attendance/roster-shift/', [AttRosterShiftController::class,'list']);
+		Route::post('/attendance/roster-shift/create', [AttRosterShiftController::class,'create']);
+		Route::post('/attendance/roster-shift/update/{id}', [AttRosterShiftController::class,'update']);
+		Route::get('/attendance/roster-shift/delete/{id}', [AttRosterShiftController::class,'delete']);
+		Route::post('/attendance/roster-shift/{id}', [AttRosterShiftController::class,'list']);
 	});
 
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_ATT_ETYPE], function(){
@@ -499,12 +521,28 @@ Route::group(['middleware' => 'auth:api'], function(){
 		Route::post('/employee/employeeinfo/{id}', [EmployeeInfoController::class,'list']);
 	});
 
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_TRIAL], function(){
+		Route::post('/employee/trial-employee-entry', [TrialEmployeeEntryController::class,'list']);
+		Route::post('/employee/trial-employee-entry/create', [TrialEmployeeEntryController::class,'create']);
+		Route::post('/employee/trial-employee-entry/update/{id}', [TrialEmployeeEntryController::class,'update']);
+		Route::get('/employee/trial-employee-entry/delete/{id}', [TrialEmployeeEntryController::class,'delete']);
+		Route::post('/employee/trial-employee-entry/{id}', [TrialEmployeeEntryController::class,'list']);
+	});
+
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_FIX_TAX], function(){
 		Route::post('/employee/fix-tax', [FixTaxController::class,'list']);
 		Route::post('/employee/fix-tax/create', [FixTaxController::class,'create']);
 		Route::post('/employee/fix-tax/update/{id}', [FixTaxController::class,'update']);
 		Route::get('/employee/fix-tax/delete/{id}', [FixTaxController::class,'delete']);
 		Route::post('/employee/fix-tax/{id}', [FixTaxController::class,'list']);
+	});	
+
+	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_LOC_TRANSFER], function(){
+		Route::post('/employee/employeetransfer', [EmployeeTransferController::class,'list']);
+		Route::post('/employee/employeetransfer/create', [EmployeeTransferController::class,'create']);
+		Route::post('/employee/employeetransfer/update/{id}', [EmployeeTransferController::class,'update']);
+		Route::get('/employee/employeetransfer/delete/{id}', [EmployeeTransferController::class,'delete']);
+		Route::post('/employee/employeetransfer/{id}', [EmployeeTransferController::class,'list']);
 	});	
 
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_LOCAL_SALE], function(){
@@ -546,6 +584,12 @@ Route::group(['middleware' => 'auth:api'], function(){
 		Route::get('/employee/sal-loan-deduct/delete/{id}', [SalLoanDeductController::class,'delete']);
 		Route::post('/employee/sal-loan-deduct/{id}', [SalLoanDeductController::class,'list']);
 	//});
+
+		Route::post('/attendance/roster-entry/', [RosterEntryController::class,'list']);
+		Route::post('/attendance/roster-entry/create', [RosterEntryController::class,'create']);
+		Route::post('/attendance/roster-entry/update/{id}', [RosterEntryController::class,'update']);
+		Route::get('/attendance/roster-entry/delete/{id}', [RosterEntryController::class,'delete']);
+		Route::post('/attendance/roster-entry/{id}', [RosterEntryController::class,'list']);
 
 	Route::group(['middleware' => 'can:'.$helperPermission->MANAGE_EMP_CARD_PRINTING], function(){
 		Route::post('employee/card-printing/fill', [CardPrintingController::class,'list']);

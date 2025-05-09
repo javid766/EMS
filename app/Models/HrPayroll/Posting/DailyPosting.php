@@ -49,23 +49,12 @@ class DailyPosting extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		
-
 		$cwhere = $request->get('cwhere', '');
 		$dateto = $request->dateto;
 		
 		$posting = DailyPosting::hydrate(
 			DB::select('CALL sp_att_closing_day("'. $dateto .'", "'. $cwhere .'", '. $userid .', '. $companyid .', '. $locationid .')')
 		);
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Attendance posting", "ErrorMsg"=>"CALL sp_att_closing_day('".$dateto."', '".$cwhere."', $userid,$companyid, $locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 

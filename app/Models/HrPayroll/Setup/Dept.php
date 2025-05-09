@@ -60,14 +60,6 @@ class Dept extends Model
 			DB::select('CALL sp_att_setup_dept_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Department", "ErrorMsg"=>"CALL sp_att_setup_dept_get($id, $userid, $companyid, $locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -121,7 +113,7 @@ class Dept extends Model
 	public function deleteDept($id, $type) {
 
 		if ($id > 0) {
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
+
 			$result = DB::select('CALL sp_att_setup_dept_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -129,14 +121,6 @@ class Dept extends Model
 					$id
 				]
 			)[0];
-
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Department", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_dept_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
 
 			if ($result->status == $this->utilsModel->API_VALIDATION_ERROR) {
 				return $this->utilsModel->returnResponseStatusMessage('error', $result->msg, $type, $this->PAGE_LINK);
@@ -190,34 +174,17 @@ class Dept extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		$vname = trim($request->vname);
-		$isactive = (isset($request->isactive) ? $request->isactive : 0);
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Department", "ErrorMsg"=>"$set_id CALL sp_att_setup_dept_insertupdate(@id, '$request->vcode', '$vname', $request->deptgroupid, $request->strength, $request->priority, '', $companyid, $locationid, $isactive, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_setup_dept_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			'. $request->deptgroupid .',
 			'. $request->strength .',
 			'. $request->priority .',
 			"",
 			'. $companyid .',
 			'. $locationid .',
-			'. $isactive .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

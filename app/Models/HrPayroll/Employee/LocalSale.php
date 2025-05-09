@@ -53,14 +53,6 @@ class LocalSale extends Model
 			DB::select('CALL sp_att_employee_local_sale_get('. $id .', '. $userid .', '. $companyid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Local Sale", "ErrorMsg"=>"CALL sp_att_employee_local_sale_get($id, $userid,$companyid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -123,13 +115,6 @@ class LocalSale extends Model
 				]
 			);
 
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Local Sale", "ErrorMsg"=>"SET @id = $id; CALL sp_att_employee_local_sale_insertupdate(@id, 0, 0, 0, 0, 0, NOW(), 0, 0, 0, 0, 0, 0, '".$this->utilsModel->SP_ACTION_DELETE."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Local Sale deleted successfully', $type, $this->PAGE_LINK);
 
 		} else {
@@ -175,21 +160,6 @@ class LocalSale extends Model
 			$updatedIp = $request->ip();
 			$companyid = $request->session()->get('companyid', 0);
 		}
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Local Sale", "ErrorMsg"=>"$set_id CALL sp_att_employee_local_sale_insertupdate(@id, $request->employeeid,'$request->invoiceno',$request->qty, $request->amount, $request->saletypeid, '".date('Y-m-d 00:00:00', strtotime($request->vdate))."', '".$request->remarks."', $companyid, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 
 		return DB::select('CALL sp_att_employee_local_sale_insertupdate(
 			?,

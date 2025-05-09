@@ -67,7 +67,7 @@
 
 							<label for="name" class="col-sm-1 col-form-label text-right">{{ __('E-Type')}}</label>
 							<div class="col-sm-2">
-								{!! Form::select('etypeid',$eTypes, null, ['class'=>'form-control select2', 'id'=> 'etypeid']) !!}
+								{!! Form::select('etypeid',$eTypes, null, ['class'=>'form-control select2', 'id'=> 'etypeid', 'placeholder'=> '--- Select ---']) !!}
 							</div>
 
 						</div>

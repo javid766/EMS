@@ -22,7 +22,7 @@
 						<div class="col-md-5 header-title">
 							<h3>{{ __('Month Attendance Days')}}</h3>
 						</div>
-						<div class="col-md-7 header-btns">
+						<div class="offset-md-2 col-md-5 header-btns">
 							<a href="#" class="btn btn-secondary" id ="searchBtn">{{ __('Fetch')}}</a>
 							<button class="btn btn-success"  id ="saveBtn">{{ __('Save')}}</button>
 							<a href="#" class="btn btn-warning" id="cancelBtn">{{ __('Cancel')}}</a> 

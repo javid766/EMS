@@ -300,15 +300,9 @@ class LeaveApply extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		if($type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-		
-
 		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Leave Apply", "ErrorMsg"=>"$set_id CALL sp_att_timeentry_leave_approval_update('$request->inIds',$request->leaveStatus,$userid,$companyid,$locationid)");
+		$logData = array('LogName'=>"Leave Apply",
+						"ErrorMsg"=>"CALL sp_att_timeentry_leave_approval_update('$request->inIds',$request->leaveStatus,$userid,$companyid,$locationid)");
 
 	
 		$this->utilsModel->saveDbLogs($logData);

@@ -177,17 +177,9 @@ class OfficialVisitEntry extends Model
 			$updatedIp = $request->ip();
 			$companyid = $request->session()->get('companyid', 0);
 		}
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-		
-
 		/* Logs for stored procedure starts */
 		$logData = array('LogName'=>"Official Visit Entry",
-						"ErrorMsg"=>"$set_id CALL sp_att_timeentry_official_visit_entry_insertupdate(@id,$request->empid,'$request->appno','$request->vdatefrom','$request->vdateto','$request->remarks',$companyid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
+						"ErrorMsg"=>"CALL sp_att_timeentry_official_visit_entry_insertupdate(@id,$request->empid,'$request->appno','$request->vdatefrom','$request->vdateto','$request->remarks',$companyid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
 
 	
 		$this->utilsModel->saveDbLogs($logData);

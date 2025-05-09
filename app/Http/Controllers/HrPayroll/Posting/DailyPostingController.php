@@ -36,9 +36,8 @@ class DailyPostingController extends Controller
     }
 
     public function fillGrid(Request $request, $deptid, $etypeid, $id=0){
-
         $request->request->add(['isactive' => '1']); //add request
-        if($deptid == -1){
+        if($deptid ==0){
             $modelData = $this->employeeInfoModel->getEmployees($request, $id, $this->utilsModel->CALL_TYPE_DEFAULT)->where('etypeid' , $etypeid);
             $modelData = $modelData->sort();
         }
@@ -46,8 +45,6 @@ class DailyPostingController extends Controller
             $modelData = $this->employeeInfoModel->getEmployees($request, $id, $this->utilsModel->CALL_TYPE_DEFAULT)->where('deptid' , $deptid)->where('etypeid' , $etypeid);
             $modelData = $modelData->sort();
         }
-
-
         return Datatables::of($modelData)
         ->addColumn('checkboxes', function($data){
             return '<input type="checkbox" name="dtcheckbox[]" class="dtcheckbox" value="'.$data->id.'"/>';                
@@ -57,14 +54,8 @@ class DailyPostingController extends Controller
     }
 
     public function save(Request $request){
-        
-        if (($request->dateto >= date('Y-m-d')) || ($request->datefrom >= date('Y-m-d'))) {
-
-            return redirect()->back()->withInput($request->input())->with('error', 'You Cannot Post Attendense for Currenct and Future.');
-        }
 
         $cwhere = '';
-
 
         if ($request->deptid != null && $request->deptid > 0) {
 
@@ -81,7 +72,6 @@ class DailyPostingController extends Controller
             $formattedIds = implode(',', $request->dtcheckbox);
             $cwhere .= ' AND H.id IN ('.$formattedIds.')';
         }
-
 
         $request['cwhere'] = $cwhere;
         

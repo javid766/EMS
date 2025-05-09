@@ -21,6 +21,7 @@
 						<h3>{{ __('Employee Information')}}</h3>
 					</div>
 					<div class="col-7 header-btns">
+						<a href="#" class="btn btn-secondary" id ="searchBtnTrial">{{ __('From Trial')}}</a>
 						<a id="searchBtn" class="btn btn-secondary">{{ __('Search')}}</a>
 						<button  class="btn btn-success" id ="saveBtn">{{ __('Save')}}</button>
 						<a href="#" class="btn btn-warning" id="cancelBtn" >{{ __('Cancel')}}</a> 
@@ -66,7 +67,7 @@
 								<div class="col-sm-3">
 								    <label for="deptid" class="col-form-label">{{ __('Department')}}<span class="text-red"> *</span></label>
 							
-									{!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2', 'id'=> 'deptid',  'required'=> 'required']) !!}
+									{!! Form::select('deptid',$allDepts, null, ['class'=>'form-control select2', 'id'=> 'deptid', 'placeholder'=> '--- Select ---', 'required'=> 'required']) !!}
 								</div>
 										
 								<div class="col-sm-3">
@@ -440,6 +441,8 @@
         data.isactive == 1 ? $("#isactive").prop('checked', true):
         $("#isactive").prop('checked', false);            	      
 		}
-</script><script src="{{ asset('js/hrpayroll/employee/employee_info.js') }}"></script>
+</script>
+<script src="{{ asset('js/hrpayroll/employee/trial_employee_entry.js') }}"></script>
+<script src="{{ asset('js/hrpayroll/employee/employee_info.js') }}"></script>
 @endpush
 @endsection

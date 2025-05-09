@@ -48,11 +48,10 @@ class OTEntryMonthly extends Model
 		$datein = date('Y-m-d 00:00:00', strtotime($request->datein));
 		$dateout = date('Y-m-d 00:00:00', strtotime($request->dateout));
 		$employeeid = $request->employeeid;
-		$deptid = $request->get('deptid',0)??-1;
-		$etypeid = $request->get('etypeid',0)??0;
+		$deptid = $request->get('deptid',-1)??-1;
 
 		$otEntryMonthly = OTEntryMonthly::hydrate(
-			DB::select('CALL sp_att_timeentry_ot_entry_monthly_get('. $id .', '. $employeeid .','. $etypeid .', "'. $datein .'",  "'. $dateout .'" ,'. $deptid .','. $userid .', '. $companyid .', '. $locationid .')')
+			DB::select('CALL sp_att_timeentry_ot_entry_monthly_get('. $id .', '. $employeeid .', "'. $datein .'",  "'. $dateout .'" ,'. $deptid .','. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
 		/* Logs for stored procedure starts */
@@ -152,16 +151,9 @@ class OTEntryMonthly extends Model
 		$vdate = date('Y-m-d 00:00:00', strtotime($request->vdate));
 		$remarks = (isset($request->remarks) ? $request->remarks : '-');
 
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-		
-		
 		/* Logs for stored procedure starts */
 		$logData = array('LogName'=>"O/T Entry Monthly",
-						"ErrorMsg"=>"$set_id CALL sp_att_timeentry_ot_entry_monthly_insertupdate(@id,$request->employeeid,'$vdate','$overtime','$remarks',1,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
+						"ErrorMsg"=>"CALL sp_att_timeentry_ot_entry_monthly_insertupdate(@id,$request->employeeid,'$vdate','$overtime','$remarks',1,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
 
 	
 		$this->utilsModel->saveDbLogs($logData);

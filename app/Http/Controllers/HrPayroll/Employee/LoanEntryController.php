@@ -9,7 +9,7 @@ use App\Models\HrPayroll\Setup\Bank;
 use App\Models\HrPayroll\Employee\EmployeeInfo;
 use App\Models\HrPayroll\Employee\SalLoan;
 use App\Models\HrPayroll\Setup\LoanTypes;
-// use App\Models\HrPayroll\Setup\FinancialYear;
+use App\Models\HrPayroll\Setup\FinancialYear;
 use App\Models\Utils;
 use App\User;
 use DataTables,Auth;
@@ -29,7 +29,7 @@ class LoanEntryController extends Controller
         $this->attAllowdedModel = new Allowded();
         $this->salLoanEntryModel = new SalLoan();
         $this->loanTypesModel = new LoanTypes();
-        //$this->accFinancialYearModel = new FinancialYear();
+        $this->accFinancialYearModel = new FinancialYear();
         $this->banksModel = new Bank();
         $this->utilsModel = new Utils();
     }
@@ -49,6 +49,7 @@ class LoanEntryController extends Controller
 
     public function fillGrid(Request $request){
         $modelData=$this->getData($request);
+
         foreach ($modelData as $value) {
             $vdate = date("d/m/Y",strtotime($value->vdate)); 
             $value['vdate'] = $vdate;
@@ -89,10 +90,10 @@ class LoanEntryController extends Controller
     }
 
     public function save(Request $request){
-        // $flag = $this->validateFinancialYear($request);
-        // if (empty($flag)) {
-        //      return redirect()->back()->withInput($request->input())->with('error' , "Please select Date in between Financial Year");
-        // }
+        $flag = $this->validateFinancialYear($request);
+        if (empty($flag)) {
+             return redirect()->back()->withInput($request->input())->with('error' , "Please select Date in between Financial Year");
+        }
         if($request->id){
             $id=$request->id;
             return $this->salLoanEntryModel->updateSalLoan($request, $id, $this->utilsModel->CALL_TYPE_DEFAULT);          
@@ -130,8 +131,8 @@ class LoanEntryController extends Controller
         return $employeeInfoData;
     }
     
-    // public function validateFinancialYear(Request $request){
-    //     return $this->accFinancialYearModel->validateFinancialYear($request,0, $this->utilsModel->CALL_TYPE_DEFAULT)->toArray();
-    // }
+    public function validateFinancialYear(Request $request){
+        return $this->accFinancialYearModel->validateFinancialYear($request,0, $this->utilsModel->CALL_TYPE_DEFAULT)->toArray();
+    }
 
 }

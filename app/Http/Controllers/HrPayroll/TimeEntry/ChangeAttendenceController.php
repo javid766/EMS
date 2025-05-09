@@ -110,51 +110,44 @@ class ChangeAttendenceController extends Controller
         } else {
 
             foreach ($empGridData['data'] as  $value) {
-             
-                if(max($value)=="on"){
+        
+                $id = $value['id'];
+                $_request = $request;
+                $_request->request->add($value);
+                $datein=$request->datein;
+                $dateout=$request->dateout;
 
-                    $id = $value['id'];
-                    $_request = $request;
-                    $_request->request->add($value);
-                    $datein=$request->datein;
-                    $dateout=$request->dateout;
+                if ($datein == null && $dateout == null) {
+
+                    $_datein = $_dateout = "1900-01-01 00:00:00";
+
+                } else {
                     
+                    $message = '';
+                    $date = date('Y-m-d', strtotime($request->vdate));
+                    $_datein = $date .' '. $datein . ':00';
+                    $_dateout = $date .' '. $dateout . ':00';
 
-                    if ($datein == null || $dateout == null) {
+                    if (!$this->isvalidDateInOut($_datein, $_dateout, $message)) {
 
-                        // $_datein = $_dateout = "1900-01-01 00:00:00";
-                        return redirect()->back()->withInput($request->input())->with('error' , "Please Enter Timeein and TimeOut");
-
-                    } else {
-                        
-                        $message = '';
-                        $date = date('Y-m-d', strtotime($request->vdate));
-                        $_datein = $date .' '. $datein . ':00';
-                        $_dateout = $date .' '. $dateout . ':00';
-
-                        if (!$this->isvalidDateInOut($_datein, $_dateout, $message)) {
-
-                           return redirect()->back()->withInput($request->input())->with('error' , $message); 
-                        }
+                       return redirect()->back()->withInput($request->input())->with('error' , $message); 
                     }
-
-                    $_request->request->add([
-                        'datein' => $_datein,
-                        'dateout' => $_dateout,
-                    ]);
-
-                    // if ($id >0) {
-
-                        $result = $this->changeAttendenceModel->updateAttendanceEmployee($_request, $id, $this->utilsModel->CALL_TYPE_DEFAULT);
-
-                    // } elseif ($id <= 0 ){
-                        
-                        // $result = $this->changeAttendenceModel->createAttendanceEmployee($_request, $this->utilsModel->CALL_TYPE_DEFAULT);
-                    // }
                 }
+
+                $_request->request->add([
+                    'datein' => $_datein,
+                    'dateout' => $_dateout,
+                ]);
+
+                // if ($id >0) {
+
+                    $result = $this->changeAttendenceModel->updateAttendanceEmployee($_request, $id, $this->utilsModel->CALL_TYPE_DEFAULT);
+
+                // } elseif ($id <= 0 ){
+                    
+                    // $result = $this->changeAttendenceModel->createAttendanceEmployee($_request, $this->utilsModel->CALL_TYPE_DEFAULT);
+                // }
             }
-
-
 
             return $result;
         }
@@ -204,6 +197,7 @@ class ChangeAttendenceController extends Controller
 
             $dateout = date('Y-m-d H:i:s', strtotime($dateout . ' +1 day'));
         }
+
         if ($this->differenceInHours($dateout, $datein) >= 24) {
 
             $message = "Employee In/Out is More than 24hrs";

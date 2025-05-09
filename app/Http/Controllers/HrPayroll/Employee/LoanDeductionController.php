@@ -48,24 +48,11 @@ class LoanDeductionController extends Controller
         ]);
 
         $data = $this->getData($request);
-        // echo "<pre>";
-        // print_r($data);
-        // exit();
-
         $data = $data->sort();
         foreach ($data as $key => $value) {
             $value->amount = floatval($value->amount);
             $value->amount = round($value->amount, 2);
-
-            // $value['datein'] = $datein;
-            // $value['filldate'] = $curdate;
-            // $value['balance'] = $value['loanamount'] - $value['loanusedamount'];
-            // $loandate = date("d/m/Y",strtotime($value->loandate)); 
-            // $value['loandate'] = $loandate;
-
-
-            if ($deptid > 0) {
-
+            if ($deptid) {
                 if($value->deptid != $deptid){ 
                     unset($data[$key]);
                 }
@@ -74,13 +61,6 @@ class LoanDeductionController extends Controller
                 $value['balance'] = $value['loanamount'] - $value['loanusedamount'];
                 $loandate = date("d/m/Y",strtotime($value->loandate)); 
                 $value['loandate'] = $loandate;
-
-                if($value['balance'] < $value['installment']){
-                    $value['deductionamount'] = $value['balance'];
-                }else{
-                    $value['deductionamount'] = $value['installment'];
-                }
-                
             } 
             else{
                 $value['datein'] = $datein;
@@ -88,15 +68,6 @@ class LoanDeductionController extends Controller
                 $value['balance'] = $value['loanamount'] - $value['loanusedamount'];
                 $loandate = date("d/m/Y",strtotime($value->loandate)); 
                 $value['loandate'] = $loandate;
-
-                $value['deductionamount'] = $value['loanamount']/$value['installment'];
-
-                if($value['balance'] < $value['installment']){
-                    $value['deductionamount'] = $value['balance'];
-                }else{
-                    $value['deductionamount'] = $value['installment'];
-                }
-                
 
             }
         }

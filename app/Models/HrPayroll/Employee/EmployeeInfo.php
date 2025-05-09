@@ -52,20 +52,6 @@ class EmployeeInfo extends Model
 			DB::select('CALL sp_att_employee_get('. $id .',  '. $request->get('isactive', 1) .', '. $userid .', '. $companyid .')')
 		);
 
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Employee Main", "ErrorMsg"=>"CALL sp_att_employee_get($id, ".$request->get('isactive', 1).", $userid,$companyid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
-		// echo "<pre>";
-  //       print_r($empInfo);
-  //       exit;
-        
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -221,22 +207,6 @@ class EmployeeInfo extends Model
 			$updatedip = $request->ip();
 			$companyid = $request->session()->get('companyid', 0);
 		}
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Employee Main", "ErrorMsg"=>"$set_id CALL sp_att_employee_insertupdate(@id,'$request->empcode', '$request->machinecardno', $request->etypeid, $request->locationid, '".trim($request->employeename)."', '".trim($request->fathername)."', $request->deptid, $request->desgid, '".date('Y-m-d 00:00:00', strtotime($request->doj))."', '$request->replaceof', $request->hiretypeid, $request->jobtypeid, '".date('Y-m-d 00:00:00', strtotime($request->dob))."', $request->genderid,$request->shiftid, '$request->contactno', '$request->email', '$request->emppic', '$request->cnicno', '".date('Y-m-d 00:00:00', strtotime($request->cnicexpiry))."', $request->bloodgroupid, $request->salary, $request->incometax, '".date('Y-m-d 00:00:00', strtotime($request->confirmationdate))."', ". (isset($request->issalarytobank) ? $request->issalarytobank : 0) .", $request->bankid,'". $request->advanceglcode ."', $request->offday1id, $request->offday2id, '". date('Y-m-d 00:00:00', strtotime($request->dol)) ."', $request->leftstatusid, '". $request->leftreason ."', $request->gradeid, $request->religionid, '". $request->education ."', '". $request->address ."', ". (isset($request->ishod) ? $request->ishod : 0) .", ". (isset($request->isregisterperson) ? $request->isregisterperson : 0) .", ". (isset($request->haveot) ? $request->haveot : 0) .", ". (isset($request->haveotoff) ? $request->haveotoff : 0) .", ". (isset($request->isstopsalary) ? $request->isstopsalary : 0) .", ". (isset($request->isexemptatt) ? $request->isexemptatt : 0) .", ". (isset($request->isexemptlatecoming) ? $request->isexemptlatecoming : 0) .", ". (isset($request->isshiftemployee) ? $request->isshiftemployee : 0) .", $userid, ". (isset($request->isactive) ? $request->isactive : 0) .", $companyid, $insertedby, '$insertedip', $updatedby, '$updatedip', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_employee_insertupdate(
 			?,
 			"'. $request->empcode .'",

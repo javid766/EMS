@@ -58,7 +58,7 @@ class AttEntry extends Model
 			$dateout = date('Y-m-d 00:00:00', strtotime($request->dateout));
 		}
 
-		$deptid = $request->get('deptid',0)??-1;
+		$deptid = $request->get('deptid',-1)??-1;
 		$etypeid = $request->get('etypeId',0)??0;
 
 		$AttEntry = AttEntry::hydrate(
@@ -140,9 +140,10 @@ class AttEntry extends Model
 
 		/* Logs for stored procedure starts */
 
+		$action_type = $this->utilsModel->SP_ACTION_DELETE;
 		$logData = array('LogName'=>"Attendance Entry",
 						"ErrorMsg"=>"CALL sp_att_timeentry_attendance_insertupdate(
-							@id, 0, NOW(), NOW(), 0, 0, 0, 0, 0, 0,0, 0, 0, '".$action_type."')");
+							@id, 0, NOW(), NOW(), 0, 0, 0, 0, 0, 0,0, 0, 0, '$action_type')");
  
 		$this->utilsModel->saveDbLogs($logData);
 
@@ -195,13 +196,6 @@ class AttEntry extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
 		$datein = date('Y-m-d H:i:s', strtotime("$request->datein"));
 		$dateout = date('Y-m-d H:i:s', strtotime("$request->dateout"));
 		$clear = (isset($request->isclear) ? $request->isclear : 0);
@@ -209,7 +203,7 @@ class AttEntry extends Model
 
 		/* Logs for stored procedure starts */
 		$logData = array('LogName'=>"Attendance Entry",
-						"ErrorMsg"=>"$set_id CALL sp_att_timeentry_attendance_insertupdate(@id,$request->employeeid,'$datein','$dateout',$request->shiftid,'$remarks',$clear,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
+						"ErrorMsg"=>"CALL sp_att_timeentry_attendance_insertupdate(@id,$request->employeeid,'$datein','$dateout',$request->shiftid,'$remarks',$clear,$companyid,$locationid,$insertedBy,'$insertedIp',$updatedBy,'$updatedIp','$sp_type')");
 
 		$this->utilsModel->saveDbLogs($logData);
 

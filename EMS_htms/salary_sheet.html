@@ -1,0 +1,410 @@
+<! DOCTYPE html>
+   <html>
+   <head>
+      <title>Salary Sheet</title>
+      <link rel="stylesheet" href="dist/css/theme.css'">
+      <link rel="stylesheet" href="all.css">
+      <style type="text/css">
+         * {
+           box-sizing: border-box;
+
+           font-size: 11px;
+         }
+         .sslip-empdetail table {
+             border-collapse:separate;
+             border-spacing:2px 0;
+         }
+        .sslip-empdetail td {
+            border-bottom: #000 dotted 1px;
+            padding: 2px 5px !important;
+         }
+        
+
+         .sslipmain{
+            margin-bottom: 20px;
+            width: 1000px;
+            margin: 0 auto;
+         }
+         .ssliphead{
+            border-bottom: 1px solid #000;
+            width: 80%;
+         }
+         .logo{
+            display: inline-block;
+            width: 40%;
+         }
+         .logo img{
+            width: 85%;
+            height: 45px;
+            margin-left: 15px;
+            margin-top: 20px;
+         }
+         .sslipdesc{
+            background-color: #d9d9d9;
+            display: inline-block;
+            font-weight: 800;
+            font-size: 16px !important;
+            text-align: center;
+            width: 15%;
+            padding-bottom: 5px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-left: 4%;
+         }
+         .sslipdate{
+            display: inline-block;
+            width: 20%;
+            text-align: right;
+            font-weight: 11px;
+         }
+         .sslip-empdetail{
+            margin-top: 20px;
+         }
+         .sslip-empdetail::after{
+            content: "";
+            clear: both;
+         }
+         
+         .sslip-footer{
+            width: 100%;
+            margin: 5px;
+            padding: 5px;
+            margin-top: 100px;
+         }
+         #monthlySaltable th{
+
+            font-size: 10px;
+            border-top: 1px solid;
+            border-bottom: 1px solid;
+            padding-top: 0px;
+         }
+         #monthlySaltable td{
+
+            font-size:8px;
+         }
+         #monthlySaltable{
+            border-collapse: collapse;
+         }
+         
+         .department {
+                background-color: #ffc10738;
+                margin-bottom: 10px;
+                border-bottom: 1px solid;
+         }
+         .department_total {
+
+         }
+         .grand_total_table {
+            width: 100%;
+            margin-top: 30px;
+
+         }
+        .grand_total_table th {
+             border: 1px solid;
+            border-collapse: collapse;
+            padding: 10px;
+        }
+        .netsalnote.right{
+         float: right;
+        }
+        .grad_total_class{
+            width: 36%;
+        }
+        
+      </style>
+   </head>
+   <body>
+      <div class="sslipmain">
+         <div class="ssliphead">
+            <div class="logo"><img src="EMS-zeta.png"></div>
+            <div>Employee Salary Sheet For the Month: <span class="sdate">Aug 2022</span></div>
+         </div>
+         <div class="sslip-empdetail">
+            <div class="department">Software Devision</div>
+            <div class="emp-tbl1">
+               <table id="monthlySaltable" class="table table-hover">
+                  <thead>
+                     <tr> 
+                        <th>E-Code</th>  
+                        <th>Employee</th>  
+                        <th>Department</th>  
+                        <th>Designation</th>
+                        <th>Doj</th>
+                        <th>Basic Salary</th>
+                        <th>Days</th>  
+                        <th>Salary</th>
+                        <th>Perform. Allowanc</th> 
+                        <th>Special Allowanc</th>  
+                        <th>Eid Bonus</th>                     
+                        <th>Arrears</th>
+                        <th>Gross Salary</th>  
+                        <th>Income Tax</th>  
+                        <th>EOBI Deduc</th> 
+                        <th>Laon Deduc</th> 
+                        <th>Leave Without Pay</th> 
+                        <th>Other Deduc.</th> 
+                        <th>Total Deduc</th>  
+                        <th>Net Salary</th>  
+                        <th>P-Mode</th>  
+                     </tr>
+
+                     <tr>
+                        <td>024</td>
+                        <td>Muhammad javid</td>
+                        <td>Software Devicion</td>
+                        <td>Sr. Software Engineer</td>
+                        <td>15-may-2018</td>
+                        <td>143000</td>
+                        <td>31</td>
+                        <td>13500</td>
+                        <td>2000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>0</td>
+                        <td>143000</td>
+                        <td>2000</td>
+                        <td>200</td>
+                        <td>1000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>42000</td>
+                        <td>140000</td>
+                        <td>-</td>
+                     </tr> 
+
+                     <tr>
+                        <td>024</td>
+                        <td>Muhammad javid</td>
+                        <td>Software Devicion</td>
+                        <td>Sr. Software Engineer</td>
+                        <td>15-may-2018</td>
+                        <td>143000</td>
+                        <td>31</td>
+                        <td>13500</td>
+                        <td>2000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>0</td>
+                        <td>143000</td>
+                        <td>2000</td>
+                        <td>200</td>
+                        <td>1000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>42000</td>
+                        <td>140000</td>
+                        <td>-</td>
+                     </tr> 
+
+                     <tr>
+                        <td>024</td>
+                        <td>Muhammad javid</td>
+                        <td>Software Devicion</td>
+                        <td>Sr. Software Engineer</td>
+                        <td>15-may-2018</td>
+                        <td>143000</td>
+                        <td>31</td>
+                        <td>13500</td>
+                        <td>2000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>0</td>
+                        <td>143000</td>
+                        <td>2000</td>
+                        <td>200</td>
+                        <td>1000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>42000</td>
+                        <td>140000</td>
+                        <td>-</td>
+                     </tr>
+
+                     <tr class="department_total">
+
+                        <th></th>
+                        <th></th>
+                        <th colspan="5">Total:</th>
+                        <th>13500</th>
+                        <th>2000</th>
+                        <th>1000</th>
+                        <th>2000</th>
+                        <th>0</th>
+                        <th>143000</th>
+                        <th>2000</th>
+                        <th>200</th>
+                        <th>1000</th>
+                        <th>1000</th>
+                        <th>2000</th>
+                        <th>42000</th>
+                        <th>140000</th>
+                        <th>-</th>
+                     </tr>
+
+                  </thead>
+                  <tbody>
+                  </tbody>
+               </table>
+            </div>  
+         </div>
+         <div class="sslip-empdetail">
+            <div class="department">Software Devision</div>
+            <div class="emp-tbl1">
+               <table id="monthlySaltable" class="table table-hover">
+                  <thead>
+                     <tr> 
+                        <th>E-Code</th>  
+                        <th>Employee</th>  
+                        <th>Department</th>  
+                        <th>Designation</th>
+                        <th>Doj</th>
+                        <th>Basic Salary</th>
+                        <th>Days</th>  
+                        <th>Salary</th>
+                        <th>Perform. Allowanc</th> 
+                        <th>Special Allowanc</th>  
+                        <th>Eid Bonus</th>                     
+                        <th>Arrears</th>
+                        <th>Gross Salary</th>  
+                        <th>Income Tax</th>  
+                        <th>EOBI Deduc</th> 
+                        <th>Laon Deduc</th> 
+                        <th>Leave Without Pay</th> 
+                        <th>Other Deduc.</th> 
+                        <th>Total Deduc</th>  
+                        <th>Net Salary</th>  
+                        <th>P-Mode</th>  
+                     </tr>
+
+                     <tr>
+                        <td>024</td>
+                        <td>Muhammad javid</td>
+                        <td>Software Devicion</td>
+                        <td>Sr. Software Engineer</td>
+                        <td>15-may-2018</td>
+                        <td>143000</td>
+                        <td>31</td>
+                        <td>13500</td>
+                        <td>2000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>0</td>
+                        <td>143000</td>
+                        <td>2000</td>
+                        <td>200</td>
+                        <td>1000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>42000</td>
+                        <td>140000</td>
+                        <td>-</td>
+                     </tr> 
+
+                     <tr>
+                        <td>024</td>
+                        <td>Muhammad javid</td>
+                        <td>Software Devicion</td>
+                        <td>Sr. Software Engineer</td>
+                        <td>15-may-2018</td>
+                        <td>143000</td>
+                        <td>31</td>
+                        <td>13500</td>
+                        <td>2000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>0</td>
+                        <td>143000</td>
+                        <td>2000</td>
+                        <td>200</td>
+                        <td>1000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>42000</td>
+                        <td>140000</td>
+                        <td>-</td>
+                     </tr> 
+
+                     <tr>
+                        <td>024</td>
+                        <td>Muhammad javid</td>
+                        <td>Software Devicion</td>
+                        <td>Sr. Software Engineer</td>
+                        <td>15-may-2018</td>
+                        <td>143000</td>
+                        <td>31</td>
+                        <td>13500</td>
+                        <td>2000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>0</td>
+                        <td>143000</td>
+                        <td>2000</td>
+                        <td>200</td>
+                        <td>1000</td>
+                        <td>1000</td>
+                        <td>2000</td>
+                        <td>42000</td>
+                        <td>140000</td>
+                        <td>-</td>
+                     </tr>  
+                     
+                     <tr class="department_total">
+                       <th></th>
+                        <th></th>
+                        <th colspan="5">Total:</th>
+                        <th>13500</th>
+                        <th>2000</th>
+                        <th>1000</th>
+                        <th>2000</th>
+                        <th>0</th>
+                        <th>143000</th>
+                        <th>2000</th>
+                        <th>200</th>
+                        <th>1000</th>
+                        <th>1000</th>
+                        <th>2000</th>
+                        <th>42000</th>
+                        <th>140000</th>
+                        <th>-</th>
+                     </tr>
+
+                     
+                  </thead>
+                  <tbody>
+                  </tbody>
+               </table>
+            </div>   
+         </div>
+         <div class="grad_total">
+            <table class="grand_total_table">
+               <thead>
+                  <tr>
+                     <th class="grad_total_class">Grand Total:</th>
+                     <th>13500</th>
+                     <th>2000</th>
+                     <th>1000</th>
+                     <th>2000</th>
+                     <th>0</th>
+                     <th>143000</th>
+                     <th>2000</th>
+                     <th>200</th>
+                     <th>1000</th>
+                     <th>1000</th>
+                     <th>2000</th>
+                     <th>42000</th>
+                     <th>140000</th>
+                  </tr>
+               </thead>
+            </table>
+         </div>
+         <div class="sslip-footer">
+            <table width="100%">
+               <tr>
+                  <td class="netsalnote left">Prepared By: ______________________________</td>
+                  <td class="netsalnote right">Created By: _______________________________</td>
+               </tr>
+            </table>
+         </div> 
+      </div> 
+   </body>
+</html>

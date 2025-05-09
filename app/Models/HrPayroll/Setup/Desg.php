@@ -60,13 +60,6 @@ class Desg extends Model
 			DB::select('CALL sp_att_setup_desg_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Designation", "ErrorMsg"=>"CALL sp_att_setup_desg_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -121,7 +114,6 @@ class Desg extends Model
 
 		if ($id > 0) {
 
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
 			$result = DB::select('CALL sp_att_setup_desg_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -129,14 +121,6 @@ class Desg extends Model
 					$id
 				]
 			)[0];
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Designation", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_desg_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			if ($result->status == $this->utilsModel->API_VALIDATION_ERROR) {
 				return $this->utilsModel->returnResponseStatusMessage('error', $result->msg, $type, $this->PAGE_LINK);
@@ -189,32 +173,16 @@ class Desg extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		$vname = trim($request->vname);
-		$is_active = (isset($request->isactive) ? $request->isactive : 0);
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Designation", "ErrorMsg"=>"$set_id CALL sp_att_setup_desg_insertupdate(@id, '$request->vcode', '$vname', '$request->strength', '$request->defaultsalary', '', $companyid, $locationid, $is_active, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		return DB::select('CALL sp_att_setup_desg_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			'. $request->strength .',
 			'. $request->defaultsalary .',
 			"",
 			'. $companyid .',
 			'. $locationid .',
-			'. $is_active.',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'. $updatedBy .',

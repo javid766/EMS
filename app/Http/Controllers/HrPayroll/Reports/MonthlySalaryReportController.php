@@ -14,7 +14,6 @@ use App\User;
 use DataTables,Auth;
 use \PDF;
 use Response;
-use LynX39\LaraPdfMerger\Facades\PdfMerger;
 
 class MonthlySalaryReportController extends Controller
 {
@@ -70,7 +69,7 @@ class MonthlySalaryReportController extends Controller
 		}
 
 		if($attfilter == 'empsalaryhistory'){
-		    if ($request->employeeid !='' ) {
+		     if ($request->employeeid !='' ) {
 			 	$cwhere = $cwhere . ' AND E.employeeid = '.$request->employeeid .'';
 			}
 		}
@@ -185,49 +184,28 @@ class MonthlySalaryReportController extends Controller
         $request->session()->put('saletypeid', $request->etypeid);
         $request->session()->put('sallocationid', $request->locationid);
         $request->session()->put('saldeptid', $request->deptid);
-        $request->session()->put('attfilter', $request->attfilter);
-        
 	}
 	    
 	public function SalarySlip(Request $request){
 
-		$files = glob(base_path('SalarySlip/*'));
-        
-        foreach($files as $file){
-        
-            if(is_file($file)) {
-        
-                unlink($file);
-            }
-        }
-
-		$pdfMerger   = PDFMerger::init();
 	   	$salemployeeid = $request->session()->get('salemployeeid', 0);
 		$salvdate      = $request->session()->get('salvdate', 0);
 		$saletypeid    = $request->session()->get('saletypeid', 0);
 		$sallocationid = $request->session()->get('sallocationid', 0);
 		$saldeptid     = $request->session()->get('saldeptid', 0);
 		$companyid     = $request->session()->get('companyid', 0);
-
 		$sdate = $salvdate;
 		$first_date_find = strtotime(date("Y-m-d", strtotime($salvdate)) . ", first day of this month");
 		$first_date = date("Y-m-d",$first_date_find);
-		$request->request->add(['datefrom' => $first_date]);
-
 		$last_date_find = strtotime(date("Y-m-d", strtotime($salvdate)) . ", last day of this month");
 		$last_date = date("Y-m-d",$last_date_find);
-		$request->request->add(['dateto' => $last_date]);
 
-	   	$cwhere = 'WHERE E.companyid = '.$companyid.'';
+	   	$cwhere = 'WHERE H.companyid = '.$companyid.'';
 		if ($salemployeeid !='') {
 	         $cwhere = $cwhere. ' AND H.employeeid = '.$salemployeeid.'';
 	    }
 	    if ($salvdate !='') {
-
-	    	//$cwhere = $cwhere .' AND H.isbank = 0 ';
-
-	         //$cwhere = $cwhere. ' AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'"';
-	    	$cwhere = $cwhere .' AND H.isbank = 0 AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'" ';
+	         $cwhere = $cwhere. ' AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'"';
 	    }
 	    if ($saletypeid !='') {
 	         $cwhere = $cwhere. ' AND H.etypeid = '.$saletypeid.'';
@@ -242,168 +220,16 @@ class MonthlySalaryReportController extends Controller
 	    $request->request->add(['cwhere'   => $cwhere]);
 
 	    $salSlipData = $this->attMonthlySalReportModel->getSalarySlip($request,$salemployeeid, $this->utilsModel->CALL_TYPE_DEFAULT);
-	    
 	    $salvdate = date("M-Y", strtotime($sdate));
 
-	    $num   = sizeof($salSlipData);
-        $data = array();
-        $page_limit = 2;
-        
-        if ($num > 0 && $num > $page_limit) {
-
-        	$salary_groups = array_chunk($salSlipData, $page_limit);
-
-        	foreach ($salary_groups as $key => $value) {
-        		$filename = 'slip'.'-'.$key.'.pdf';
-
-        		$salarydata = ['salSlipData' => $value, 'salvdate' => $salvdate];
-                $pdf = PDF::loadView('hrpayroll.reports.monthly_salary_slip_pdf', $salarydata);
-                $pdf->save(base_path('SalarySlip/'.$filename));
-
-        	}
-           	
-           	$files = array_diff(scandir(base_path('SalarySlip/')), array('..', '.'));
-
-            natsort($files);
-            
-            foreach ($files as $file) {
-            
-                $pdfMerger->addPDF(base_path('SalarySlip/'.$file), 'all');
-            }
-            
-            $pdfMerger->merge();
-            $pdfMerger->save(base_path('SalarySlip/salaryslip.pdf'), "file");
-            $filename = 'salaryslip.pdf';
-            $path = base_path('SalarySlip/'.$filename);
-            
-            return Response::make(file_get_contents($path), 200, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$filename.'"'
-            ]);
-
-        }else {
-
-            $salarydata = ['salSlipData' => $salSlipData , 'salvdate' => $salvdate];
-            $pdf = PDF::loadView('hrpayroll.reports.monthly_salary_slip_pdf', $salarydata);
-            $filename = 'salaryslip.pdf';
-            $pdf->save(base_path('SalarySlip/'.$filename));   
-            $path = base_path('SalarySlip/'.$filename);
-            
-            return Response::make(file_get_contents($path), 200, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="'.$filename.'"'
-            ]);
-        }
-
-	  
-	}
-	public function SalarySheet(Request $request){
-
-		$files = glob(base_path('SalarySheet/*'));
-        
-        foreach($files as $file){
-        
-            if(is_file($file)) {
-        
-                unlink($file);
-            }
-        }
-
-		$pdfMerger   = PDFMerger::init();
-	   	$salemployeeid = $request->session()->get('salemployeeid', 0);
-		$salvdate      = $request->session()->get('salvdate', 0);
-		$saletypeid    = $request->session()->get('saletypeid', 0);
-		$sallocationid = $request->session()->get('sallocationid', 0);
-		$saldeptid     = $request->session()->get('saldeptid', 0);
-		$companyid     = $request->session()->get('companyid', 0);
-
-		$attfilter     = $request->session()->get('attfilter', 0);
-
-		$sdate = $salvdate;
-		$first_date_find = strtotime(date("Y-m-d", strtotime($salvdate)) . ", first day of this month");
-		$first_date = date("Y-m-d",$first_date_find);
-		$request->request->add(['datefrom' => $first_date]);
-
-		$last_date_find = strtotime(date("Y-m-d", strtotime($salvdate)) . ", last day of this month");
-		$last_date = date("Y-m-d",$last_date_find);
-		$request->request->add(['dateto' => $last_date]);
-
-	   	$cwhere = 'WHERE E.companyid = '.$companyid.'';
-		if ($salemployeeid !='') {
-	         $cwhere = $cwhere. ' AND H.employeeid = '.$salemployeeid.'';
-	    }
-
-
-	    // if ($salvdate !='') {
-	    // 	$cwhere = $cwhere .' AND H.isbank = 0';
-	    // 	$cwhere = $cwhere .' AND H.isbank = 0 AND H.vdate BETWEEN "2021-11-01" AND  "'.$last_date.'" ';
-	    // }
-
-	    if($attfilter == 'salsheetcash'){
-			$cwhere = $cwhere .' AND H.isbank = 0 AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'" ';
-		}
-
-		if($attfilter == 'salsheetcheque'){
-			$cwhere = $cwhere .' AND H.isbank = 1 AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'"';
-		}
-
-		if($attfilter == 'salsheetcomplete'){
-			$cwhere = $cwhere .' AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'"';
-		}
-
-		if($attfilter == 'finalsettlement'){
-			$cwhere = $cwhere .' AND H.dol BETWEEN "'.$first_date.'" AND  "'.$last_date.'" AND H.vdate BETWEEN "'.$first_date.'" AND  "'.$last_date.'"';
-		}
-
-	    if ($saletypeid !='') {
-	         $cwhere = $cwhere. ' AND H.etypeid = '.$saletypeid.'';
-	    }
-	    if ($sallocationid !='') {
-	         $cwhere = $cwhere. ' AND H.locationid = '.$sallocationid.'';
-	    }
-	    if ($saldeptid !='') {
-	         $cwhere = $cwhere. ' AND H.deptid = '.$saldeptid.'';
-	    }
-
-
-	    $request->request->add(['vdate' => $first_date]);
-	    $request->request->add(['cwhere'   => $cwhere]);
-
-	    $salSheetData = $this->attMonthlySalReportModel->getSalarySheet($request,$salemployeeid, $this->utilsModel->CALL_TYPE_DEFAULT);
-	    
-	    
-	    $department_wise_salary_slip = $this->departmentGrouping($salSheetData);
-
-	    $salvdate = date("M-Y", strtotime($sdate));
-	    
-	   
-        $salarydata = ['salSheetData' => $department_wise_salary_slip , 'salvdate' => $salvdate];
-
-
-        $customPaper = array(0,0,900,1224.00);
-
-        $pdf = PDF::loadView('hrpayroll.reports.monthly_salary_sheet_pdf', $salarydata)->setPaper($customPaper);
-
-        //$pdf = PDF::loadView('hrpayroll.reports.monthly_salary_sheet_pdf', $salarydata);
-        $filename = 'salarysheet.pdf';
-        $pdf->save(base_path('SalarySheet/'.$filename));   
-        $path = base_path('SalarySheet/'.$filename);
-        
-        return Response::make(file_get_contents($path), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$filename.'"'
-        ]);
-        
-	}
-	function departmentGrouping($salSheetData){
-	
-		$my_data = array();
-		foreach ($salSheetData as $key => $value) {
-			
-			$current_department = $value->department;
-			$my_data[$current_department][] = $value;
-		}
-		
-		return $my_data;
+	    $data = ['salSlipData' => $salSlipData,'salvdate' => $salvdate];
+	    $pdf = PDF::loadView('hrpayroll.reports.monthly_salary_slip_pdf', $data);
+	    $filename = 'salaryslip.pdf';
+	    $pdf->save(base_path('SalarySlip/'.$filename)); 
+	    $path = base_path('SalarySlip/'.$filename);
+	    return Response::make(file_get_contents($path), 200, [
+	            'Content-Type' => 'application/pdf',
+	            'Content-Disposition' => 'inline; filename="'.$filename.'"'
+	        ]);
 	}
 }

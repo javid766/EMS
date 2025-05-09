@@ -55,14 +55,6 @@ class SalaryTaxSlab extends Model
 			DB::select('CALL sp_att_setup_salary_fix_tax_slab_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Salary Tax Slab", "ErrorMsg"=>"CALL sp_att_setup_salary_fix_tax_slab_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -117,7 +109,6 @@ class SalaryTaxSlab extends Model
 
 		if ($id > 0) {
 
-			$action_type = $this->utilsModel->SP_ACTION_DELETE;
 			$result = DB::select('CALL sp_att_setup_salary_fix_tax_slab_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -125,13 +116,6 @@ class SalaryTaxSlab extends Model
 					$id
 				]
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Salary Tax Slab", "ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_salary_fix_tax_slab_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$action_type')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
 
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Salary Tax Slab deleted successfully', $type, $this->PAGE_LINK);
 
@@ -181,23 +165,6 @@ class SalaryTaxSlab extends Model
 			$locationid = $request->session()->get('locationid', 0);
 		}
 
-		$is_active = (isset($request->isactive) ? $request->isactive : 0);
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Salary Tax Slab", "ErrorMsg"=>"$set_id CALL sp_att_setup_salary_fix_tax_slab_insertupdate(@id, $request->amountfrom, $request->amountto, $request->fixtax, $request->percentage, '$request->remarks', $companyid, $locationid, $is_active, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		return DB::select('CALL sp_att_setup_salary_fix_tax_slab_insertupdate(
 			?,
 			'. $request->amountfrom .',
@@ -207,7 +174,7 @@ class SalaryTaxSlab extends Model
 			"'.$request->remarks .'",
 			'. $companyid .',
 			'. $locationid .',
-			'. $is_active .',
+			'. (isset($request->isactive) ? $request->isactive : 0) .',
 			'.  $insertedBy  .',
 			"'. $insertedIp .'",
 			'.  $updatedBy .',

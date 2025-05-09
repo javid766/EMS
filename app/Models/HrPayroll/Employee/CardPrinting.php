@@ -51,16 +51,8 @@ class CardPrinting extends Model
 		}
 		
 		$empData = CardPrinting::hydrate(
-			DB::select('CALL sp_att_employee_card_printing_fill('. $userid .', '. $companyid .', '. $request->locationid .', '. $request->deptid .', '. $request->etypeid .')')
+			DB::select('CALL sp_att_employee_card_printing_fill('. $userid .', '. $companyid .', '. $request->locationid .', '. $request->deptid .', '. $request->etypeid .', '. $request->alldepts .')')
 		);
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Card Printing", "ErrorMsg"=>"CALL sp_att_employee_card_printing_fill($userid,$companyid,$request->locationid, $request->deptid, $request->etypeid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
@@ -103,14 +95,6 @@ class CardPrinting extends Model
 		$empCardData = CardPrinting::hydrate(
 			DB::select('CALL sp_att_employee_card_printing_printemp('. $userid .', '. $companyid .', \''.$request->empids .'\')')
 		);
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Card Printing", "ErrorMsg"=>"CALL sp_att_employee_card_printing_printemp($userid,$companyid, '$request->empids')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 

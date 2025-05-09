@@ -46,7 +46,7 @@
 				</div>
 				@endcan
 				@can($helperPermission->MANAGE_SETUP)
-				<div class="nav-item  {{ ($segment2 == 'company' || $segment2 == 'currency'|| $segment2 == 'currency-exchange'  || $segment2 == 'country' ||$segment2 == 'project' ||$segment2 == 'bank' || $segment2 == 'financial-year'|| $segment2 == 'location'|| $segment2 == 'grade' || $segment2 == 'dept'|| $segment2 == 'dept-group' ||$segment2 == 'desg' ||$segment2 == 'religion' || $segment2 == 'job-status'|| $segment2 == 'left-status'|| $segment2 == 'gender'|| $segment2 == 'etype' || $segment2 == 'entitlement-type'|| $segment2 == 'weekday'|| $segment2 == 'ramazan'|| $segment2 == 'allowded'|| $segment2 == 'allowed-group'|| $segment2 == 'attcode'|| $segment2 == 'holiday'|| $segment2 == 'shift' || $segment2 == 'salary-tax-slab' || $segment2 == 'sale-types' || $segment2 == 'loan-types' || $segment2 == 'setup-report' || $segment2 == 'leave-balance' || $segment2 == 'probation-status') ? 'active open' : '' }}  has-sub">
+				<div class="nav-item  {{ ($segment2 == 'company' || $segment2 == 'currency'|| $segment2 == 'currency-exchange'  || $segment2 == 'country' ||$segment2 == 'project' ||$segment2 == 'bank' || $segment2 == 'financial-year'|| $segment2 == 'location'|| $segment2 == 'grade' || $segment2 == 'dept'|| $segment2 == 'dept-group' ||$segment2 == 'desg' ||$segment2 == 'religion' || $segment2 == 'job-status'|| $segment2 == 'left-status'|| $segment2 == 'gender'|| $segment2 == 'etype' || $segment2 == 'entitlement-type'|| $segment2 == 'weekday'|| $segment2 == 'ramazan'|| $segment2 == 'allowded'|| $segment2 == 'allowed-group'|| $segment2 == 'attcode'|| $segment2 == 'holiday'|| $segment2 == 'shift' || $segment2 == 'roster-shift' || $segment2 == 'salary-tax-slab' || $segment2 == 'sale-types' || $segment2 == 'loan-types' || $segment2 == 'setup-report' || $segment2 == 'leave-balance' || $segment2 == 'probation-status') ? 'active open' : '' }}  has-sub">
 					<a href="#"><i class="ik ik-file"></i><span>{{ __('Setup')}}</span></a>
 					<div class="submenu-content">
 						<!-- only those have manage_user permission will get access -->
@@ -58,7 +58,10 @@
 						@endcan
 						@can($helperPermission->MANAGE_COUNTRY) 
 						<a href="{{route('setup-country')}}" class="menu-item {{ ($segment1 == 'setup' && $segment2 == 'country' ) ? 'active' : '' }}">{{ __('Country')}}</a>
-						@endcan						
+						@endcan
+						@can($helperPermission->MANAGE_FINANCIAL_YEAR)
+						<a href="{{route('setup-financial-year')}}" class="menu-item {{ ($segment1 == 'setup' && $segment2 == 'financial-year' ) ? 'active' : '' }}">{{ __('Financial Year')}}</a>    
+						@endcan							
 						@can($helperPermission->MANAGE_LOCATION)
 						<a href="{{route('setup-location')}}" class="menu-item {{ ($segment1 == 'setup' && $segment2 == 'location' ) ? 'active' : '' }}">{{ __('Location')}}</a>
 						@endcan
@@ -90,7 +93,9 @@
 						@can($helperPermission->MANAGE_ATT_SHIFT)
 						<a href="{{route('setup-shift')}}" class="menu-item {{ ($segment1 == 'setup' && $segment2 == 'shift' ) ? 'active' : '' }}">{{ __('Shift')}}</a>
 						@endcan
-					
+						@can($helperPermission->MANAGE_ATT_ROSTER_SHIFT)
+						<a href="{{route('setup-roster-shift')}}" class="menu-item {{ ($segment1 == 'setup' && $segment2 == 'roster-shift' ) ? 'active' : '' }}">{{ __('Shift Roster')}}</a>
+						@endcan
 						@can($helperPermission->MANAGE_ATT_HOLIDAY)
 						<a href="{{route('setup-holiday')}}" class="menu-item {{ ($segment1 == 'setup' && $segment2 == 'holiday' ) ? 'active' : '' }}">{{ __('Holiday')}}</a>
 						@endcan
@@ -127,9 +132,15 @@
 						@can($helperPermission->MANAGE_EMP_CARD_PRINTING) 
 						<a href="{{route('employee-card-printing')}}" class="menu-item {{ ($segment2 == 'card-printing' ) ? 'active' : '' }}">{{ __('Card Printing')}}</a>
 						@endcan
-						<!-- @can($helperPermission->MANAGE_EMP_FIX_TAX) 				
+						@can($helperPermission->MANAGE_EMP_LOC_TRANSFER) 
+						<a href="{{route('employee-transfer')}}" class="menu-item {{ ($segment2 == 'employeetransfer' ) ? 'active' : '' }}">{{ __('Employee Transfer')}}</a>	
+						@endcan	
+						@can($helperPermission->MANAGE_EMP_FIX_TAX) 				
 						<a href="{{route('employee-fix-tax')}}" class="menu-item {{ ($segment2 == 'fix-tax' ) ? 'active' : '' }}">{{ __('Employee FixTax')}}</a>
-						@endcan -->
+						@endcan
+						@can($helperPermission->MANAGE_EMP_CLOSING_MONTH_CHEQUE) 
+						<a href="{{route('employee-closing-month-cheque')}}" class="menu-item {{ ($segment2 == 'closing-month-cheque' ) ? 'active' : '' }}">{{ __('Closing Month Cheque')}}</a>	
+						@endcan
 						@can($helperPermission->MANAGE_EMP_Advance) 									
 						<a href="{{route('employee-advance')}}" class="menu-item {{ ($segment2 == 'advance' ) ? 'active' : '' }}">{{ __(' Advance')}}</a>
 						@endcan
@@ -144,6 +155,9 @@
 						@endcan
 						@can($helperPermission->MANAGE_EMP_REPORT) 
 						<a href="{{route('employee-report')}}" class="menu-item {{ ($segment2 == 'report' ) ? 'active' : '' }}">{{ __('Employee Report')}}</a>
+						@endcan
+						@can($helperPermission->MANAGE_EMP_TRIAL) 
+						<a href="{{route('trial-employee-entry')}}" class="menu-item {{ ($segment2 == 'trial-employee-entry' ) ? 'active' : '' }}">{{ __('Trial Employee')}}</a>
 						@endcan
 					</div>		
 				</div>
@@ -179,6 +193,9 @@
 						@endcan
 						@can($helperPermission->MANAGE_TE_LEAVE_APPROVAL)
 						<a href="{{route('leave-approval')}}" class="menu-item {{ ($segment2 == 'leave-approval' ) ? 'active' : '' }}">{{ __('Leave Approval')}}</a>
+						@endcan
+						@can($helperPermission->MANAGE_TE_ROSTER_ENTRY)
+						<a href="{{route('roster-entry')}}" class="menu-item {{ ($segment2 == 'roster-entry' ) ? 'active' : '' }}">{{ __('Roster Entry')}}</a>
 						@endcan
 					</div>				
 				</div>

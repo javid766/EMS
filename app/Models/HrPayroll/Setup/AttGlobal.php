@@ -56,19 +56,10 @@ class AttGlobal extends Model
 		// 	return $this->utilsModel->returnResponseStatusMessage('error', "Session expired please login again", $type, '/login');
 		// }
 
-		
-
 		$attglobals = AttGlobal::hydrate(
 			DB::select('CALL sp_att_setup_globals_get('. $id .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Global Configurations",
-						"ErrorMsg"=>"CALL sp_att_setup_globals_get($id,$userid,$companyid,$locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
 
 
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
@@ -125,7 +116,6 @@ class AttGlobal extends Model
 
 		if ($id > 0) {
 
-
 			$result = DB::select('CALL sp_att_setup_globals_insertupdate(
 				?, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				"'. $this->utilsModel->SP_ACTION_DELETE .'")',
@@ -133,16 +123,6 @@ class AttGlobal extends Model
 					$id
 				]
 			);
-
-			$action = $this->utilsModel->SP_ACTION_DELETE;
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Global Configurations",
-							"ErrorMsg"=>"SET @id = $id; CALL sp_att_setup_globals_insertupdate(@id, 0, 0, 0, 0, 0, 0, 0, 0,0,'$action')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Configuration deleted successfully', $type, $this->PAGE_LINK);
 
@@ -186,21 +166,12 @@ class AttGlobal extends Model
 			$companyid = $request->session()->get('companyid', 0);
 		}
 
-		$vname = trim($request->vname);
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Global Configurations",
-						"ErrorMsg"=>"CALL sp_att_setup_globals_insertupdate(@id,'$request->vcode','$vname','$request->vvalue',$companyid, 1, '$insertedBy', '$insertedIp', '$updatedBy','$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
 
 
 		return DB::select('CALL sp_att_setup_globals_insertupdate(
 			?,
 			"'. $request->vcode .'",
-			"'. $vname .'",
+			"'. trim($request->vname) .'",
 			"'. $request->vvalue .'",
 			'.  $companyid .',
 			'.  1 .',

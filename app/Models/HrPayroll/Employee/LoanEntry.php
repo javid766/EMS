@@ -53,15 +53,6 @@ class LoanEntry extends Model
 			DB::select('CALL sp_emp_setup_loan_get('. $id .', '. $userid .', '. $companyid .')')
 		);
 
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan", "ErrorMsg"=>"CALL sp_emp_setup_loan_get($id, $userid,$companyid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -124,13 +115,6 @@ class LoanEntry extends Model
 				]
 			);
 
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Loan", "ErrorMsg"=>"SET @id = $id; CALL sp_emp_setup_loan_insertupdate(@id, 0, 0, NOW(), 0, 0,  NOW() , 0, 0, 0, 0, 0, 0, 0, 0, '".$this->utilsModel->SP_ACTION_DELETE."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Employee Loan Entry deleted successfully', $type, $this->PAGE_LINK);
 
 		} else {
@@ -178,21 +162,6 @@ class LoanEntry extends Model
 			$updatedIp = $request->ip();
 			$companyid = $request->session()->get('companyid', 0);
 		}
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan", "ErrorMsg"=>"$set_id CALL sp_emp_setup_loan_insertupdate(@id, $request->vtypeid, $request->empid, '".date('Y-m-d 00:00:00', strtotime($request->vdate))."' , $request->bankid, '".$request->chequeno."', '".date('Y-m-d 00:00:00', strtotime($request->chequedate))."', $request->amount, $request->installment,  '".$request->remarks."', $companyid,  $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 
 		return DB::select('CALL sp_emp_setup_loan_insertupdate(
 			?,

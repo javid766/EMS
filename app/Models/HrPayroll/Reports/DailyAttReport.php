@@ -51,70 +51,30 @@ class DailyAttReport extends Model
 			$attListingData = DailyAttReport::hydrate(
 			DB::select('CALL sp_rpt_att_d_unposted('. $userid .', '. $companyid .','. $locationid .',"'. $request->vdate .'" , \''.$request->cwhere .' \')')
 			);
-
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Daily Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_d_unposted($userid, $companyid, $locationid, '".$request->vdate."', '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 
 		if ($request->attfilter == 'postedAtt') {
 			$attListingData = DailyAttReport::hydrate(
 			DB::select('CALL sp_rpt_att_d_posted('. $userid .', '. $companyid .','. $locationid .',"'. $request->vdate .'" , \''.$request->cwhere .' \')')
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Daily Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_d_posted($userid, $companyid, $locationid, '".$request->vdate."', '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 
 		if ($request->attfilter == 'unpostedAttSummary') {
 			$attListingData = DailyAttReport::hydrate(
 			DB::select('CALL sp_rpt_att_d_unposted_summary('. $userid .', '. $companyid .','. $locationid .',"'. $request->vdate .'" , \''.$request->cwhere .' \')')
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Daily Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_d_unposted_summary($userid, $companyid, $locationid, '".$request->vdate."', '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 		}
 
 		if ($request->attfilter == 'postedAttSummary') {
 			$attListingData = DailyAttReport::hydrate(
 			DB::select('CALL sp_rpt_att_d_posted_summary('. $userid .', '. $companyid .','. $locationid .',"'. $request->vdate .'" , \''.$request->cwhere .' \')')
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Daily Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_d_posted_summary($userid, $companyid, $locationid, '".$request->vdate."', '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
 		}
 
 		if ($request->attfilter == 'absenteeList') {
 			$attListingData = DailyAttReport::hydrate(
 			DB::select('CALL sp_rpt_att_d_absenteelist('. $userid .', '. $companyid .','. $locationid .',"'. $request->vdate .'" , \''.$request->cwhere .' \')')
 			);
-
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Daily Attendance Report", "ErrorMsg"=>"CALL sp_rpt_att_d_absenteelist($userid, $companyid, $locationid, '".$request->vdate."', '".$request->cwhere."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-			
 		}
 
 

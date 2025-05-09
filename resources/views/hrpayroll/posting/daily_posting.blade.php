@@ -15,7 +15,10 @@
 				<div class="card card-border">
 						<div class="card-header">
 							<div class="col-5 header-title">
-								<h3>{{ __('Attendance Posting')}}</h3>						
+								<h3>{{ __('Attendance Posting')}}</h3>
+								<p>
+									Call sp_att_closing_day("{{ Session::get('q_dateto') }}","",{{Auth::id()}},{{Session::get('companyid')}},{{Session::get('locationid')}});
+								</p>							
 							</div>
 							<div class="offset-md-2 col-md-5 header-btns">
 							   <button class="btn btn-success" id="saveBtn" >{{ __('Posting')}}</button>
@@ -30,7 +33,7 @@
 									<div class="form-group row">
 										<div class="col-md-3">
 											<label for="deptid" class="col-form-label">{{ __(' Department')}}</label>								
-											{!! Form::select('deptid',$depts, null, ['class'=>'form-control select2', 'id'=> 'deptid']) !!}
+											{!! Form::select('deptid',$depts, null, ['class'=>'form-control select2', 'id'=> 'deptid', 'placeholder'=>'All Departments']) !!}
 										</div>
 
 										<div class="col-md-2">

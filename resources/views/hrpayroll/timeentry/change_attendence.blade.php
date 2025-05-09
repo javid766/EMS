@@ -73,7 +73,6 @@
 									<th>{{ __('TimeIn')}}</th>
 									<th>{{ __('TimeOut')}}</th>
 									<th>{{ __('Remarks')}}</th>
-									<th><input type="checkbox" id ="selectall"  /></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -89,16 +88,14 @@
 									name="data[{{$i}}][employeeid]"  value="{{ $empAtt->employeeid }}">
 									<input type="hidden" class="form-control" 
 									name="data[{{$i}}][date]"  value="{{ $empAtt->vdate }}">
-									<td><input type="time" class="form-control" value="@if ($empAtt->datein != '00:00'){{ $empAtt->datein }}@endif" name="data[{{$i}}][datein]" oninput="markCheckbox('data-{{$i}}')" /></td>
-                           			<td><input type="time" class="form-control" value="@if ($empAtt->dateout != '00:00'){{ $empAtt->dateout }}@endif" name="data[{{$i}}][dateout]" oninput="markCheckbox('data-{{$i}}')" /></td>
+									<td><input type="time" class="form-control" value="@if ($empAtt->datein != '00:00'){{ $empAtt->datein }}@endif" name="data[{{$i}}][datein]" /></td>
+                           			<td><input type="time" class="form-control" value="@if ($empAtt->dateout != '00:00'){{ $empAtt->dateout }}@endif" name="data[{{$i}}][dateout]" /></td>
                            			<td><input type="text" class="form-control" name="data[{{$i}}][remarks]" id="data-{{$i}}-remarks" value="{{ $empAtt->remarks }}"/></td>
-                           			<td><input type="checkbox" class="checkbox-entry" name="data[{{$i}}][attChange]" id="data-{{$i}}-attChange"/></td>
 									</tr>
-									
 									@php $i++ @endphp
 									@endforeach	
 									@else
-									<td colspan="6" align="center">No Record Found </td>
+									<td colspan="5" align="center">No Record Found </td>
 									@endif
 								</tbody>
 							</table>
@@ -122,11 +119,5 @@
 <script src="{{ asset('js/hrpayroll/timeEntry/change_attendence.js') }}"></script> 
 <script src="{{ asset('js/alerts.js')}}"></script>
 <script src="{{ asset('plugins/jquery-toast-plugin/dist/jquery.toast.min.js')}}"></script>
-<script type="text/javascript">
-    function markCheckbox(dateid){
-        $('#'+dateid+'-attChange').prop('checked', true);
-    }
-</script>
-
 @endpush
 @endsection

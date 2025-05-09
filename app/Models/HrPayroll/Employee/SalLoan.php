@@ -66,13 +66,6 @@ class SalLoan extends Model
 			DB::select('CALL sp_att_sal_loan_get('. $id .', '. $employeeid .', '. $userid .', '. $companyid .', '. $locationid .')')
 		);
 
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan", "ErrorMsg"=>"CALL sp_att_sal_loan_get($id, $employeeid, $userid,$companyid, $locationid)");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
-
 		if ($type == $this->utilsModel->CALL_TYPE_API) {
 
 			return response([
@@ -139,13 +132,6 @@ class SalLoan extends Model
 				]
 			);
 
-			/* Logs for stored procedure starts */
-			$logData = array('LogName'=>"Loan", "ErrorMsg"=>"SET @id = $id; CALL sp_att_sal_loan_insertupdate(@id, 0, 0, 0, 0, 0, 0, NOW(), 0, NOW(), 0, 0, 0, 0, 0, 0, '".$this->utilsModel->SP_ACTION_DELETE."')");
-
-			$this->utilsModel->saveDbLogs($logData);
-
-			/* Logs for stored procedure ends */
-
 			return $this->utilsModel->returnResponseStatusMessage('success', 'Loan Entry deleted successfully', $type, $this->PAGE_LINK);
 
 		} else {
@@ -195,20 +181,6 @@ class SalLoan extends Model
 			$companyid = $request->session()->get('companyid', 0);
 			$locationid = $request->session()->get('locationid', 0);
 		}
-
-		if($sp_type == 'u'){
-			$set_id = "SET @id = $id;";
-		}else{
-			$set_id = "";
-		}
-
-
-		/* Logs for stored procedure starts */
-		$logData = array('LogName'=>"Loan", "ErrorMsg"=>"$set_id CALL sp_att_sal_loan_insertupdate(@id, $request->employeeid, $request->amount, $request->installment, $request->bankid, $request->allowdedid, '".$request->chequeno."',    '".date('Y-m-d 00:00:00', strtotime($request->chequedate))."', '$request->remarks', '".date('Y-m-d 00:00:00', strtotime($request->datein))."', $companyid, 1, $insertedBy, '$insertedIp', $updatedBy, '$updatedIp', '$sp_type')");
-
-		$this->utilsModel->saveDbLogs($logData);
-
-		/* Logs for stored procedure ends */
 
 		return DB::select('CALL sp_att_sal_loan_insertupdate(
 			?,

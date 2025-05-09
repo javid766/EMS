@@ -203,15 +203,6 @@
             })
 		
 	});
-
-	//Delete Record
-	//End Delete Record
-	$(document).on('click','#deleteRecord' ,function(){
-		var id = $('#id').val();	
-		window.location.href = 'company/delete/'+id;
-	});
-
-
 	//End Edit Button
 	//Search Buton
 	$(document).on('click','#search-button', function(){
